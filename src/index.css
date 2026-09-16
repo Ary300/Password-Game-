@@ -1,6 +1,6 @@
 @import "tailwindcss";
-@import "@fontsource-variable/archivo/wdth.css";
-@import "@fontsource-variable/big-shoulders-display/wght.css";
+@import "@fontsource-variable/archivo/wdth";
+@import "@fontsource-variable/big-shoulders-display/wght";
 @import "@fontsource/libre-baskerville/400.css";
 @import "@fontsource/libre-baskerville/400-italic.css";
 @import "@fontsource/libre-baskerville/700.css";
