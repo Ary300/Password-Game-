@@ -178,3 +178,48 @@ Claude Code walks this list in the running app and reports each line as pass or 
 - Plain constructs over clever ones. No one-line ternary chains, no reduce pipelines, no abstract helpers used once.
 - One component per file, named the same as the file. Logic that does not touch React lives in `src/engine/` as plain functions with tests beside them.
 - Comments explain why, never what. A function under 10 lines needs none.
+
+## 12. Classes, rosters, and the Park Tudor build
+
+This section was added after the first build started. It covers Mr. Ritz's classes at Park Tudor School and the requests that came in during development.
+
+### Two ways to play
+
+The home screen offers two paths. **Quick game** needs nothing: two teams, default settings, straight to Team up. **Class game** loads a saved class roster, splits present students into teams, and tracks lifetime stats. A teacher who never touches the class features still gets the whole game.
+
+### Turns hand off automatically
+
+A team's turn lasts the full timer. After a correct guess the team gets a fresh word and keeps going until the clock hits zero. When time runs out the word is revealed for two seconds, then the next team's hand-off screen appears with its own short countdown and the next turn starts on its own. The game keeps cycling through teams until the rounds are done. The teacher can hold the hand-off (H) or start early (Space). Turning off "Keep guessing until time runs out" restores one word per turn, and turning off "Auto hand-off" makes every turn wait for the teacher.
+
+### Classes and rosters
+
+- The Setup screen has a Classes tab. Add a class, paste names one per line, done. Picking a class loads its students.
+- Each student has an absent toggle for today, so pickers only show who is in the room.
+- Split present students into teams with one button, then move any student between teams.
+- The guesser picker defaults to whoever on that team has guessed the fewest times, so the teacher can just hit Space most turns.
+
+### Switching guesser mid-turn
+
+G key or a Swap button on the Live screen. It pauses the clock, opens the picker, and resumes on select. Credit goes to whoever was up when the word was guessed. The turn log records both names.
+
+### Small extras
+
+- After a correct guess in a class game, a two-second card: "Aryav, 3.4 s. Career: 14 correct."
+- A "Still to guess" strip on the Team up screen.
+- The ? key shows every keyboard shortcut.
+- Undo (U) reverses the last Correct, Skip, End turn, skip-team, or score edit from the current turn and returns to that moment with the clock paused.
+- Class board: a Leaderboard tab ranking classes by average correct guesses per turn.
+- Quick game button reuses the last class, teams, and settings when they exist.
+- Projector window: a second browser window that shows only the game and follows the teacher's window.
+
+### Branding
+
+Park Tudor crimson (#C63527), deep crimson (#95271A), panther night (#1A0606), and gold (#FED141). Libre Baskerville for the school wordmark only, Archivo for everything else.
+
+### Build order additions
+
+| Phase | Build | Check before moving on |
+|---|---|---|
+| 11 | Classes, absent toggle, team split, fewest-guesses default | A class of 24 splits into 4 teams; absent students never appear in pickers |
+| 12 | Mid-turn swap, career card, still-to-guess strip, undo, ? overlay | Swap credits the new guesser; undo returns to the paused moment |
+| 13 | Class board, quick game, projector window | Two windows stay in sync through a full turn |

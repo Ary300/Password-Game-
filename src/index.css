@@ -1,36 +1,50 @@
 @import "tailwindcss";
-@import "@fontsource-variable/inter";
-@import "@fontsource-variable/outfit";
+@import "@fontsource-variable/archivo/wdth.css";
+@import "@fontsource/libre-baskerville/400.css";
+@import "@fontsource/libre-baskerville/400-italic.css";
+@import "@fontsource/libre-baskerville/700.css";
 
-/* Runtime theme tokens. Dark is the default because it reads best on a classroom projector. */
+/* Park Tudor palette. Dark "panther night" is the default because it projects best. */
 :root,
 [data-theme="dark"] {
-  --bg: #0b0e1f;
-  --surface: #151936;
-  --surface-2: #1e2347;
-  --line: #2c3263;
-  --text: #f6f5f0;
-  --muted: #9aa0c3;
-  --accent: #5b8cff;
-  --accent-ink: #0b0e1f;
-  --good: #34d399;
-  --warn: #fbbf24;
-  --bad: #f87171;
+  --bg: #140606;
+  --surface: #1f0c0b;
+  --surface-2: #2b1311;
+  --surface-3: #3a1b18;
+  --line: #4a2622;
+  --text: #fbf3ea;
+  --muted: #c9aca5;
+  --faint: #8d6d67;
+  --crimson: #c63527;
+  --crimson-deep: #95271a;
+  --crimson-text: #ff6a57;
+  --gold: #fed141;
+  --gold-ink: #1a0606;
+  --good: #3ddc97;
+  --warn: #ffa630;
+  --bad: #ff4b3e;
+  --ring-track: #3a1b18;
   color-scheme: dark;
 }
 
 [data-theme="light"] {
-  --bg: #f7f6f2;
+  --bg: #fbf6ef;
   --surface: #ffffff;
-  --surface-2: #ecebe4;
-  --line: #d9d7cc;
-  --text: #15182e;
-  --muted: #5c617f;
-  --accent: #3b6cf0;
-  --accent-ink: #ffffff;
-  --good: #0e9f6e;
-  --warn: #d97706;
-  --bad: #dc2626;
+  --surface-2: #f3eadf;
+  --surface-3: #e9dccd;
+  --line: #dccbb9;
+  --text: #1a0606;
+  --muted: #6b4f49;
+  --faint: #9c817a;
+  --crimson: #c63527;
+  --crimson-deep: #95271a;
+  --crimson-text: #b02a1c;
+  --gold: #fed141;
+  --gold-ink: #1a0606;
+  --good: #0f8a5f;
+  --warn: #c26a00;
+  --bad: #d62d20;
+  --ring-track: #e9dccd;
   color-scheme: light;
 }
 
@@ -38,16 +52,21 @@
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
   --color-line: var(--line);
   --color-text: var(--text);
   --color-muted: var(--muted);
-  --color-accent: var(--accent);
-  --color-accent-ink: var(--accent-ink);
+  --color-faint: var(--faint);
+  --color-crimson: var(--crimson);
+  --color-crimson-deep: var(--crimson-deep);
+  --color-crimson-text: var(--crimson-text);
+  --color-gold: var(--gold);
+  --color-gold-ink: var(--gold-ink);
   --color-good: var(--good);
   --color-warn: var(--warn);
   --color-bad: var(--bad);
-  --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-display: "Outfit Variable", "Inter Variable", system-ui, sans-serif;
+  --font-sans: "Archivo Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Libre Baskerville", Georgia, serif;
 }
 
 html,
@@ -61,14 +80,47 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
+  font-variation-settings: "wdth" 100;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
+/* Condensed widths carry scoreboard labels; expanded width is saved for the word itself. */
+.wdth-condensed {
+  font-stretch: 75%;
+  font-variation-settings: "wdth" 75;
+}
+.wdth-wide {
+  font-stretch: 112%;
+  font-variation-settings: "wdth" 112;
+}
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
 :focus-visible {
-  outline: 3px solid var(--accent);
+  outline: 3px solid var(--gold);
   outline-offset: 3px;
-  border-radius: 8px;
+  border-radius: 10px;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--gold-ink);
+}
+
+.scroll-area {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+@keyframes pulse-red {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+.animate-pulse-red {
+  animation: pulse-red 1s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -76,6 +128,7 @@ body {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
 }
