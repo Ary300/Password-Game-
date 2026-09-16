@@ -18,9 +18,14 @@ function startTurnNow() {
   useGameStore.getState().startTurn(Date.now())
 }
 
+// H only pauses a running hand-off or resumes a held one; in manual hand-off mode it must not start a countdown.
 function toggleHold() {
   const theState = useGameStore.getState()
-  theState.holdHandoff(theState.game.handoffEndsAt !== null, Date.now())
+  if (theState.game.handoffEndsAt !== null) {
+    theState.holdHandoff(true, Date.now())
+  } else if (theState.game.handoffHeld) {
+    theState.holdHandoff(false, Date.now())
+  }
 }
 
 export default function TeamUpScreen({ mode }: { mode: ScreenMode }) {
@@ -133,7 +138,7 @@ export default function TeamUpScreen({ mode }: { mode: ScreenMode }) {
             {theWarning}
           </div>
         </div>
-        <TeamUpStandings standings={theStandings} currentTeamId={theTeam.id} />
+        <TeamUpStandings standings={theStandings} currentTeamId={theTeam.id} control={theIsControl} />
       </section>
     </MotionConfig>
   )

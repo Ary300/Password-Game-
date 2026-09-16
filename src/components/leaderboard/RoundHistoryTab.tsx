@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Team, TurnResult } from '../../engine/types'
 import { useGameStore } from '../../store/useGameStore'
 import Button from '../ui/Button'
+import EditRowModal from './EditRowModal'
 import EmptyPanel from './EmptyPanel'
 import { HISTORY_GRID } from './grids'
 import HistoryRow from './HistoryRow'
@@ -39,6 +41,7 @@ export default function RoundHistoryTab() {
   const theNavigate = useNavigate()
   const theTeams = useGameStore((theState) => theState.teams)
   const theHistory = useGameStore((theState) => theState.game.history)
+  const [theEditingId, setTheEditingId] = useState<string | null>(null)
 
   if (theHistory.length === 0) {
     return (
@@ -54,6 +57,19 @@ export default function RoundHistoryTab() {
     )
   }
 
+  // Looked up by id so the modal always shows the stored row, even right after it changes.
+  let theEditingRow: TurnResult | null = null
+  let theEditingTeam = ''
+  for (let n = 0; n < theHistory.length; n++) {
+    if (theHistory[n].id === theEditingId) {
+      theEditingRow = theHistory[n]
+      const theTeam = findTeam(theTeams, theHistory[n].teamId)
+      if (theTeam !== null) {
+        theEditingTeam = theTeam.name
+      }
+    }
+  }
+
   const theGroups = groupNewestFirst(theHistory)
   const theSections = []
   for (let n = 0; n < theGroups.length; n++) {
@@ -67,7 +83,7 @@ export default function RoundHistoryTab() {
         theCorrect = theCorrect + 1
       }
       thePoints = thePoints + theRow.points
-      theItems.push(<HistoryRow key={theRow.id} row={theRow} team={findTeam(theTeams, theRow.teamId)} />)
+      theItems.push(<HistoryRow key={theRow.id} row={theRow} team={findTeam(theTeams, theRow.teamId)} onEdit={(theClicked) => setTheEditingId(theClicked.id)} />)
     }
     theSections.push(
       <section key={'round-' + String(theGroup.round) + '-' + String(n)} aria-label={'Round ' + String(theGroup.round)}>
@@ -84,15 +100,17 @@ export default function RoundHistoryTab() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className={'label border-b-2 border-surface-3 pr-4 pb-2 pl-3 ' + HISTORY_GRID}>
+      <div className={'label border-b-2 border-surface-3 pr-2 pb-2 pl-3 ' + HISTORY_GRID}>
         <span>Team</span>
         <span>Guesser</span>
         <span>Word</span>
         <span>Outcome</span>
         <span className="text-right">Time left</span>
         <span className="text-right">Points</span>
+        <span className="sr-only">Change</span>
       </div>
       <div className="scroll-area flex min-h-0 flex-1 flex-col gap-5 bg-surface">{theSections}</div>
+      <EditRowModal row={theEditingRow} teamName={theEditingTeam} onClose={() => setTheEditingId(null)} />
     </div>
   )
 }

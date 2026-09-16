@@ -113,3 +113,40 @@ export function splitIntoTeams(theStudents: Student[], num: number, theRandom: (
   }
   return theTeams
 }
+
+export type RosterTeam = {
+  name: string
+  players: string[]
+}
+
+export type ParsedRoster = {
+  teams: RosterTeam[]
+  ignored: number
+}
+
+// One team per line as "Name: player, player". A line with no colon is a team with no players yet,
+// and lines past the team limit are counted so the teacher can be told what was dropped.
+export function parseRoster(theText: string, num: number): ParsedRoster {
+  const theLines = theText.split(/\r?\n/)
+  const theTeams: RosterTeam[] = []
+  let theIgnored = 0
+  for (let n = 0; n < theLines.length; n++) {
+    const theLine = theLines[n].trim()
+    if (theLine.length === 0) {
+      continue
+    }
+    if (theTeams.length >= num) {
+      theIgnored = theIgnored + 1
+      continue
+    }
+    const theColon = theLine.indexOf(':')
+    let theName = theLine
+    let thePlayers: string[] = []
+    if (theColon !== -1) {
+      theName = theLine.slice(0, theColon)
+      thePlayers = parseNames(theLine.slice(theColon + 1))
+    }
+    theTeams.push({ name: theName.replace(/\s+/g, ' ').trim(), players: thePlayers })
+  }
+  return { teams: theTeams, ignored: theIgnored }
+}

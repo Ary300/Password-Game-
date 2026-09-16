@@ -1,3 +1,4 @@
+import { X } from 'lucide-react'
 import { useState } from 'react'
 import type { Team } from '../../engine/types'
 import { useGameStore } from '../../store/useGameStore'
@@ -53,15 +54,46 @@ export default function TeamEditorRow({ team, index, lockedPlayers, hiddenIds }:
     )
   }
 
+  function clearPlayers() {
+    setTheDraft('')
+    setTeamPlayers(team.id, '')
+  }
+
+  let theClear = null
+  if (!lockedPlayers && (team.players.length > 0 || theDraft.trim().length > 0)) {
+    theClear = (
+      <button
+        type="button"
+        onClick={clearPlayers}
+        aria-label={'Remove all players from ' + team.name}
+        title="Remove all players"
+        className="inline-flex h-5 items-center gap-1 px-1 text-sm font-semibold text-faint transition-colors hover:bg-crimson hover:text-white"
+      >
+        <X size={14} aria-hidden="true" />
+        Clear
+      </button>
+    )
+  }
+
+  // Absent students are hidden from the chips, so the count matches what the teacher sees.
+  let thePlayerCount = team.players.length
+  if (lockedPlayers) {
+    thePlayerCount = 0
+    for (let n = 0; n < team.players.length; n++) {
+      if (hiddenIds.indexOf(team.players[n].id) === -1) {
+        thePlayerCount = thePlayerCount + 1
+      }
+    }
+  }
   let theCount = 'No players'
-  if (team.players.length === 1) {
+  if (thePlayerCount === 1) {
     theCount = '1 player'
-  } else if (team.players.length > 1) {
-    theCount = String(team.players.length) + ' players'
+  } else if (thePlayerCount > 1) {
+    theCount = String(thePlayerCount) + ' players'
   }
 
   return (
-    <li className="flex max-h-32 min-h-[84px] flex-1 items-stretch gap-4 border-l-8 bg-surface py-3 pr-3 pl-3" style={{ borderLeftColor: team.color }}>
+    <li className="flex max-h-32 min-h-[84px] flex-1 items-stretch gap-4 border-l-8 bg-surface py-2 pr-3 pl-3" style={{ borderLeftColor: team.color }}>
       <span aria-hidden="true" className="display w-10 shrink-0 pt-1 text-center text-5xl text-faint">
         {String(index + 1)}
       </span>
@@ -71,9 +103,12 @@ export default function TeamEditorRow({ team, index, lockedPlayers, hiddenIds }:
           onChange={(theEvent) => renameTeam(team.id, theEvent.target.value)}
           aria-label={'Name of team ' + String(index + 1)}
           maxLength={28}
-          className="display h-14 w-full border-b-4 border-surface-3 bg-transparent px-1 text-4xl text-text focus:border-gold focus:outline-none 2xl:text-5xl"
+          className="display h-12 w-full border-b-4 border-surface-3 bg-transparent px-1 text-4xl text-text focus:border-gold focus:outline-none 2xl:text-5xl"
         />
-        <span className="label px-1">{theCount}</span>
+        <div className="flex items-center justify-between gap-2 px-1">
+          <span className="label">{theCount}</span>
+          {theClear}
+        </div>
       </div>
       <div className="min-w-0 flex-1">{thePlayers}</div>
     </li>

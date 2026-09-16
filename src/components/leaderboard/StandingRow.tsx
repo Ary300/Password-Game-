@@ -38,11 +38,11 @@ export default function StandingRow({ standing, maxPoints, tied, striped }: Stan
       style={{ borderLeftColor: standing.color }}
     >
       <div className="text-center">
-        <span className={'display tabular block text-7xl ' + theRankTone}>{standing.rank}</span>
+        <span className={'display tabular block text-5xl xl:text-7xl ' + theRankTone}>{standing.rank}</span>
         {theTiedLabel}
       </div>
       <div className="min-w-0">
-        <span className="display block truncate pb-1 text-5xl">{standing.name}</span>
+        <span className="display block truncate pb-1 text-4xl xl:text-5xl">{standing.name}</span>
         <div className="mt-2 h-2.5 bg-bg" aria-hidden="true">
           <motion.div
             className="h-full"
@@ -54,9 +54,9 @@ export default function StandingRow({ standing, maxPoints, tied, striped }: Stan
         </div>
       </div>
       <ScoreCell teamId={standing.teamId} teamName={standing.name} points={standing.points} />
-      <span className="display tabular text-right text-4xl">{standing.correct}</span>
-      <span className="display tabular text-right text-4xl text-muted">{standing.skipped}</span>
-      <span className="display tabular text-right text-4xl text-muted">{standing.turns}</span>
+      <span className="display tabular text-right text-3xl xl:text-4xl">{standing.correct}</span>
+      <span className="display tabular text-right text-3xl text-muted xl:text-4xl">{standing.skipped}</span>
+      <span className="display tabular text-right text-3xl text-muted xl:text-4xl">{standing.turns}</span>
     </motion.li>
   )
 }

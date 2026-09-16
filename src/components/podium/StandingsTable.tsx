@@ -23,6 +23,10 @@ export default function StandingsTable({ standings, large }: StandingsTableProps
   const theRows = []
   for (let n = 0; n < standings.length; n++) {
     const theRow = standings[n]
+    let theTurnWord = 'turns'
+    if (theRow.turns === 1) {
+      theTurnWord = 'turn'
+    }
     let theRankTone = 'text-muted'
     if (theRow.rank === 1) {
       theRankTone = 'text-gold'
@@ -36,7 +40,7 @@ export default function StandingsTable({ standings, large }: StandingsTableProps
         <span className={'display tabular text-center ' + theNameSize + ' ' + theRankTone}>{theRow.rank}</span>
         <span className={'display truncate pb-0.5 ' + theNameSize}>{theRow.name}</span>
         <span className={theStatsClass}>
-          {theRow.correct} correct, {theRow.skipped} skipped, {theRow.turns} {theRow.turns === 1 ? 'turn' : 'turns'}
+          {theRow.correct} correct, {theRow.skipped} skipped, {theRow.turns} {theTurnWord}
         </span>
         <span className={'display tabular text-right text-gold ' + theNameSize}>{theRow.points}</span>
       </li>,

@@ -9,9 +9,10 @@ type LiveTeamPanelProps = {
   showSwap: boolean
   onSwap: () => void
   stats: ReactNode
+  scoreControl?: ReactNode
 }
 
-export default function LiveTeamPanel({ teamName, teamColor, totalPoints, guesser, showSwap, onSwap, stats }: LiveTeamPanelProps) {
+export default function LiveTeamPanel({ teamName, teamColor, totalPoints, guesser, showSwap, onSwap, stats, scoreControl = null }: LiveTeamPanelProps) {
   let theSwap = null
   if (showSwap) {
     theSwap = (
@@ -40,18 +41,21 @@ export default function LiveTeamPanel({ teamName, teamColor, totalPoints, guesse
     )
   }
   return (
-    <div className="flex w-[clamp(380px,34vw,640px)] min-w-0 flex-col">
+    <div className="flex w-[clamp(380px,34vw,640px)] min-w-0 flex-col max-[1199px]:[&_kbd]:hidden">
       <div className="varsity-cut-left mesh flex items-center justify-end py-[1.2vh] pr-8 pl-16" style={{ backgroundColor: teamColor }}>
         <span className="display min-w-0 truncate pt-1 text-[clamp(44px,7vh,84px)] text-gold-ink">{teamName}</span>
       </div>
-      <div className="flex min-h-0 flex-1 items-center justify-between gap-6 pt-4 pr-8 pl-16">
+      <div className="flex min-h-0 flex-1 items-center justify-between gap-6 pt-4 pr-8 pl-16 max-[1199px]:gap-3 max-[1199px]:pr-5 max-[1199px]:pl-10">
         <div className="flex min-w-0 flex-col items-start gap-3 pb-2">
           {theGuesser}
           {stats}
         </div>
         <div className="flex shrink-0 flex-col items-end">
-          <span className="display tabular pt-[0.08em] text-[clamp(110px,18vh,210px)] text-gold">{totalPoints}</span>
-          <span className="label text-lg">Total</span>
+          <span className="display tabular pt-[0.08em] text-[clamp(96px,18vh,210px)] text-gold">{totalPoints}</span>
+          <div className="flex items-center gap-3">
+            {scoreControl}
+            <span className="label text-lg">Total</span>
+          </div>
         </div>
       </div>
     </div>

@@ -38,11 +38,11 @@ export default function SetupScreen() {
 
   return (
     <div className="grid h-full min-h-0 overflow-y-auto lg:grid-cols-[minmax(460px,0.82fr)_1.18fr] lg:overflow-hidden">
-      <div className="min-h-[560px] lg:min-h-0">
+      <div className="lg:min-h-0">
         <QuickStartHero />
       </div>
 
-      <Tabs.Root value={theTab} onValueChange={setTheTab} className="flex min-h-0 min-w-0 flex-col px-5 pt-5 pb-5 xl:px-10 xl:pt-7 xl:pb-8">
+      <Tabs.Root value={theTab} onValueChange={setTheTab} className="flex h-[calc(100dvh-3.5rem)] min-h-0 min-w-0 flex-col px-5 pt-5 pb-5 xl:px-10 xl:pt-7 xl:pb-8 lg:h-auto">
         <Tabs.List aria-label="Team setup" className="mb-5 flex gap-8 border-b-4 border-surface-2">
           <Tabs.Trigger value="teams" className={theTabStyle}>
             Quick teams

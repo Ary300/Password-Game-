@@ -38,8 +38,8 @@ export default function HandoffPanel({ endsAt, held, handoffSeconds, projector, 
     theHeadline = 'Starts in'
     theClock = (
       <div className="flex items-end gap-5">
-        <span className="display tabular pt-[0.08em] text-[clamp(96px,15vh,190px)] text-gold">{Math.ceil(theMsLeft / 1000)}</span>
-        <div className="mb-4 h-4 w-[clamp(100px,12vw,320px)] bg-surface-3">
+        <span className="display tabular pt-[0.08em] text-[clamp(96px,15vh,190px)] text-gold [@media(max-height:700px)]:text-[64px]">{Math.ceil(theMsLeft / 1000)}</span>
+        <div className="mb-4 h-4 w-[clamp(100px,12vw,320px)] bg-surface-3 [@media(max-height:700px)]:mb-2 [@media(max-height:700px)]:w-20">
           <div className="h-full origin-left bg-gold" style={{ transform: 'scaleX(' + String(theFraction) + ')' }} />
         </div>
       </div>
@@ -67,7 +67,7 @@ export default function HandoffPanel({ endsAt, held, handoffSeconds, projector, 
     }
     theActions = (
       <div className="flex flex-wrap items-end gap-1.5">
-        <Button variant="primary" size="xl" hotkey="Space" onClick={blurThen(onStart)}>
+        <Button variant="primary" size="xl" hotkey="Space" onClick={blurThen(onStart)} className="[@media(max-height:700px)]:h-14 [@media(max-height:700px)]:px-5 [@media(max-height:700px)]:text-3xl">
           {theStartLabel}
         </Button>
         {theHoldButton}
@@ -91,7 +91,7 @@ export default function HandoffPanel({ endsAt, held, handoffSeconds, projector, 
     )
   }
   return (
-    <div className="flex flex-wrap items-end gap-x-8 gap-y-3">
+    <div className="flex flex-wrap items-end gap-x-8 gap-y-3 max-[1199px]:gap-x-4 max-[1199px]:[&_kbd]:hidden">
       {theStatus}
       {theActions}
     </div>

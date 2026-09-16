@@ -87,3 +87,53 @@ export function teamPoints(theTeamId: string, theHistory: TurnResult[]): number 
   }
   return thePoints
 }
+
+export type EditableOutcome = 'correct' | 'skip' | 'timeup'
+
+const CHANGED_FROM = 'Changed from '
+
+export function outcomeLabel(theOutcome: TurnResult['outcome']): string {
+  if (theOutcome === 'correct') {
+    return 'Correct'
+  }
+  if (theOutcome === 'skip') {
+    return 'Skip'
+  }
+  if (theOutcome === 'timeup') {
+    return 'Time up'
+  }
+  return 'Score edit'
+}
+
+// Keeps the row's own note ("Ended early") and replaces any earlier change note, so flipping a row back and forth stays readable.
+function baseNote(theNote: string): string {
+  const theIndex = theNote.indexOf(CHANGED_FROM)
+  if (theIndex === -1) {
+    return theNote
+  }
+  return theNote.slice(0, theIndex).replace(/[.,\s]+$/, '')
+}
+
+// A teacher's correction re-prices the row with today's settings and the seconds that were left when it happened.
+export function reviseRow(theRow: TurnResult, theOutcome: EditableOutcome, pointsPerCorrect: number, theTimeBonus: boolean): TurnResult {
+  if (theRow.outcome === 'adjust' || theRow.outcome === theOutcome) {
+    return theRow
+  }
+  let thePoints = 0
+  if (theOutcome === 'correct') {
+    thePoints = pointsForCorrect(pointsPerCorrect, theTimeBonus, theRow.secondsLeft)
+  }
+  const theBase = baseNote(theRow.note)
+  let theOriginal = outcomeLabel(theRow.outcome)
+  const theIndex = theRow.note.indexOf(CHANGED_FROM)
+  if (theIndex !== -1) {
+    theOriginal = theRow.note.slice(theIndex + CHANGED_FROM.length)
+  }
+  let theNote = CHANGED_FROM + theOriginal
+  if (theOriginal === outcomeLabel(theOutcome)) {
+    theNote = theBase
+  } else if (theBase.length > 0) {
+    theNote = theBase + '. ' + CHANGED_FROM + theOriginal
+  }
+  return { ...theRow, outcome: theOutcome, points: thePoints, note: theNote }
+}

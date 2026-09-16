@@ -31,8 +31,8 @@ export default function PodiumBlock({ standing, delay, large }: PodiumBlockProps
     theBlockStyle = { height: theHeight, borderTopColor: 'transparent' }
   }
 
-  let theNameSize = 'text-[clamp(2.5rem,5.5vh,3.75rem)]'
-  let thePointsSize = 'text-[clamp(2rem,4.4vh,3rem)]'
+  let theNameSize = 'text-[clamp(1.75rem,5.5vh,3.75rem)]'
+  let thePointsSize = 'text-[clamp(1.5rem,4.4vh,3rem)]'
   if (large) {
     theNameSize = 'text-[clamp(3.5rem,7vh,4.5rem)]'
     thePointsSize = 'text-[clamp(2.75rem,5.5vh,3.75rem)]'
@@ -50,7 +50,7 @@ export default function PodiumBlock({ standing, delay, large }: PodiumBlockProps
 
   return (
     <motion.div className="flex h-full min-w-0 flex-col justify-end" initial={theInitial} animate={{ y: '0%' }} transition={{ delay: delay, type: 'spring', stiffness: 130, damping: 21 }}>
-      <div className="flex h-[var(--podium-label)] shrink-0 flex-col items-center justify-end px-2 pb-3 text-center">
+      <div className="flex h-[var(--podium-label)] shrink-0 flex-col items-center justify-end px-2 pb-2 text-center xl:pb-3">
         <span className={'display block max-w-full truncate pb-1 ' + theNameSize}>{standing.name}</span>
         <span className={'display tabular text-gold ' + thePointsSize}>
           {standing.points}

@@ -14,7 +14,7 @@ export default function ClueChecker() {
     const theTurn = theState.game.turn
     const theNow = Date.now()
     if (theOpen) {
-      if (theState.game.phase === 'live' && theTurn !== null && theTurn.pausedAt === null && theTurn.end === null && theNow >= theTurn.startedAt) {
+      if (theState.game.phase === 'live' && theTurn !== null && theTurn.pausedAt === null && theTurn.end === null) {
         theState.togglePause(theNow)
         thePausedByUs.current = true
       }

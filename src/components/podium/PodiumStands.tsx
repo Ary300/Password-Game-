@@ -37,9 +37,9 @@ export default function PodiumStands({ standings, large }: PodiumStandsProps) {
     theColumns = 'grid-cols-1 max-w-[420px]'
   }
 
-  let theLabel = '6.5rem'
+  let theLabel = 'clamp(4.5rem, 14vh, 8rem)'
   if (large) {
-    theLabel = '9rem'
+    theLabel = 'clamp(6rem, 16vh, 10rem)'
   }
   const theStyle = { '--podium-label': theLabel } as CSSProperties
 

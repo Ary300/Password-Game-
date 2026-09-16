@@ -12,6 +12,7 @@ type LiveControlsProps = {
   onUndo: () => void
 }
 
+// Narrow windows hide the key caps: the column is too thin for a label and a cap side by side.
 // Clicked buttons drop focus so the next Space or Enter goes to the hotkeys instead of re-pressing the button.
 function blurThen(theAction: () => void) {
   return (theEvent: MouseEvent<HTMLButtonElement>) => {
@@ -28,7 +29,7 @@ export default function LiveControls({ paused, counting, skipsLeft, onCorrect, o
     thePauseVariant = 'gold'
   }
   return (
-    <div className="mx-auto grid w-full max-w-[760px] grid-cols-2 gap-1.5 2xl:grid-cols-4" role="group" aria-label="Turn controls">
+    <div className="mx-auto grid w-full max-w-[760px] grid-cols-2 gap-1.5 2xl:grid-cols-4 max-[1199px]:[&_kbd]:hidden max-[1199px]:[&>button]:px-3" role="group" aria-label="Turn controls">
       <Button variant="good" size="xl" hotkey="Enter" className="col-span-2 2xl:col-span-4" disabled={counting} onClick={blurThen(onCorrect)}>
         Correct
       </Button>

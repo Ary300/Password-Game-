@@ -10,10 +10,10 @@ import { resultsToCsv } from '../engine/csv'
 import { useStandings } from '../hooks/useGameView'
 import { useEffect, useState } from 'react'
 import { useHotkeys } from '../hooks/useHotkeys'
-
-const PODIUM_ENTER_DELAY_MS = 2500
 import { downloadText } from '../lib/download'
 import { useGameStore } from '../store/useGameStore'
+
+const PODIUM_ENTER_DELAY_MS = 2500
 
 export type ScreenMode = 'control' | 'projector'
 
@@ -67,7 +67,7 @@ export default function PodiumScreen({ mode }: { mode: ScreenMode }) {
     theActions = <PodiumActions final={theFinal} onExport={exportCsv} />
   }
 
-  let thePadding = 'px-6 pt-5 pb-5 xl:px-10 xl:pt-7'
+  let thePadding = 'px-6 pt-3 pb-3 xl:px-10 xl:pt-7 xl:pb-5'
   if (theLarge) {
     thePadding = 'px-10 pt-8 pb-8'
   }
@@ -83,7 +83,7 @@ export default function PodiumScreen({ mode }: { mode: ScreenMode }) {
         <div className="mt-2 min-h-0 flex-1">
           <PodiumStands standings={theStandings} large={theLarge} />
         </div>
-        <div className="mt-4 flex shrink-0 flex-col items-stretch gap-4 lg:flex-row">
+        <div className="mt-3 flex shrink-0 flex-col items-stretch gap-3 md:flex-row xl:mt-4 xl:gap-4">
           <StandingsTable standings={theStandings} large={theLarge} />
           {theActions}
         </div>

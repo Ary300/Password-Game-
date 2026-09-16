@@ -15,17 +15,17 @@ export default function LiveTurnStats({ turnPoints, skipsLeft, size }: LiveTurnS
   }
   if (size === 'sm') {
     return (
-      <div className="flex items-baseline gap-5">
-        <span className="flex items-baseline gap-2">
+      <div className="flex items-end gap-5">
+        <span className="flex flex-col items-start">
           <span className="display tabular text-4xl text-good">
             {theSign}
             {turnPoints}
           </span>
-          <span className="label text-lg">this turn</span>
+          <span className="label text-base whitespace-nowrap">this turn</span>
         </span>
-        <span className="flex items-baseline gap-2">
+        <span className="flex flex-col items-start">
           <span className="display tabular text-4xl">{skipsLeft}</span>
-          <span className="label text-lg">{theSkipText}</span>
+          <span className="label text-base whitespace-nowrap">{theSkipText}</span>
         </span>
       </div>
     )

@@ -19,9 +19,9 @@ export default function ClassesPanel() {
 
   if (theClasses.length === 0) {
     return (
-      <div className="grid h-full min-h-0 content-center gap-10 xl:grid-cols-[1fr_1.1fr]">
+      <div className="scroll-area grid h-full min-h-0 content-start gap-6 xl:content-center xl:gap-10 xl:grid-cols-[1fr_1.1fr]">
         <div className="border-l-8 border-crimson pl-6">
-          <h3 className="display text-7xl">Add your first class</h3>
+          <h3 className="display text-5xl xl:text-7xl">Add your first class</h3>
           <p className="mt-4 max-w-[34ch] text-lg text-muted">Track who has guessed, mark absences, and keep lifetime stats.</p>
         </div>
         <AddClassForm />
@@ -76,7 +76,7 @@ export default function ClassesPanel() {
             Delete class
           </Button>
         </div>
-        <div className="grid min-h-0 flex-1 gap-8 lg:grid-cols-2">
+        <div className="grid min-h-0 flex-1 gap-8 md:grid-cols-2">
           <ClassRosterColumn classRoom={theActive} />
           <ClassTeamsColumn key={theActive.id} classRoom={theActive} />
         </div>

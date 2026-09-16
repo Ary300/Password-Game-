@@ -60,7 +60,7 @@ export default function ScoreCell({ teamId, teamName, points }: ScoreCellProps) 
           onKeyDown={onKey}
           onBlur={() => setTheEditing(false)}
           aria-label={'New score for ' + teamName}
-          className="display tabular h-16 w-36 border-4 border-gold bg-bg px-3 text-right text-5xl text-gold outline-none"
+          className="display tabular h-14 w-28 border-4 border-gold bg-bg px-2 text-right text-4xl xl:h-16 xl:w-36 xl:text-5xl text-gold outline-none"
         />
         <span className="label mt-1 whitespace-nowrap">Enter saves, Esc cancels</span>
       </div>
@@ -73,7 +73,7 @@ export default function ScoreCell({ teamId, teamName, points }: ScoreCellProps) 
       onClick={startEdit}
       title={'Edit ' + teamName + "'s score"}
       aria-label={'Edit score for ' + teamName + ', now ' + String(points)}
-      className="display tabular -my-2 px-3 py-2 text-right text-7xl text-gold transition-colors hover:bg-bg hover:shadow-[inset_0_-4px_0_0_var(--gold)]"
+      className="display tabular -my-2 px-3 py-2 text-right text-5xl text-gold xl:text-7xl transition-colors hover:bg-bg hover:shadow-[inset_0_-4px_0_0_var(--gold)]"
     >
       {points}
     </button>

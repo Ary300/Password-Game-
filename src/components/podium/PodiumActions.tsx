@@ -35,9 +35,9 @@ export default function PodiumActions({ final, onExport }: PodiumActionsProps) {
   }
 
   return (
-    <div className="flex w-full shrink-0 flex-col justify-end gap-2 lg:w-[24rem]">
+    <div className="flex w-full shrink-0 flex-col justify-end gap-2 md:w-[22rem] xl:w-[24rem]">
       {theMain}
-      <div className="flex gap-2 [&>button]:flex-1">
+      <div className="flex gap-2 [&>button]:flex-1 [&>button]:px-2">
         {theNewGame}
         <Button onClick={onExport}>Export CSV</Button>
         <Button onClick={() => theNavigate('/leaderboard')}>View history</Button>

@@ -1,7 +1,8 @@
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 import { BUILT_IN_WORDS } from '../data/wordData'
-import { commitGameToClass } from '../engine/career'
+import { commitGameToClass, reviseCommittedGame } from '../engine/career'
+import { resetClassTotals } from '../engine/classBoard'
 import {
   COUNTDOWN_MS,
   MAX_HANDOFF_SECONDS,
@@ -19,9 +20,10 @@ import {
 } from '../engine/defaults'
 import { makeId } from '../engine/ids'
 import { buildPool, pickWord } from '../engine/pickWord'
-import { absentIds, defaultTeams, makeClass, makeStudent, makeTeam, parseNames, presentStudents, splitIntoTeams } from '../engine/roster'
+import { absentIds, defaultTeams, makeClass, makeStudent, makeTeam, parseNames, parseRoster, presentStudents, splitIntoTeams } from '../engine/roster'
 import { nextTeamIndex, playerName, resolveGuesserId } from '../engine/rotation'
-import { pointsForCorrect } from '../engine/scoring'
+import { pointsForCorrect, reviseRow } from '../engine/scoring'
+import type { EditableOutcome } from '../engine/scoring'
 import { defaultTeamName, teamColorAt } from '../engine/teamColors'
 import { remainingMs, resumedStartedAt, secondsLeftFromMs } from '../engine/timer'
 import type { ClassRoom, GameState, Player, Settings, Student, Team, Turn, TurnResult, TurnStart } from '../engine/types'
@@ -58,6 +60,7 @@ export type GameStore = {
   renameTeam: (theTeamId: string, theName: string) => void
   setTeamPlayers: (theTeamId: string, theNamesText: string) => void
   loadLastTeams: () => void
+  setTeamsFromRoster: (theRosterText: string) => void
   movePlayer: (thePlayerId: string, theTeamId: string) => void
 
   addClass: (theName: string, theNamesText: string) => string
@@ -86,6 +89,9 @@ export type GameStore = {
   closeSwap: (theNow: number) => void
   swapGuesser: (thePlayerId: string, theNow: number) => void
   editTeamScore: (theTeamId: string, theNewTotal: number, theCurrentTotal: number) => void
+  updateHistoryRow: (theRowId: string, theOutcome: EditableOutcome) => void
+  removeHistoryRow: (theRowId: string) => void
+  resetClassBoard: (theClassId: string, theCareersToo: boolean) => void
   undo: () => string | null
   endGame: () => void
   playAgain: () => void
@@ -244,6 +250,19 @@ function replaceClass(theClasses: ClassRoom[], theClassId: string, theChange: (t
   return theNext
 }
 
+// Standings, podium, and the class board all read history, so a corrected row only has to fix the saved class copy.
+function withRevisedHistory(theState: GameStore, theHistory: TurnResult[]): Partial<GameStore> {
+  const theOldGame = theState.game
+  const theNewGame = { ...theOldGame, history: theHistory }
+  if (!theOldGame.committed || theOldGame.classId === null) {
+    return { game: theNewGame }
+  }
+  return {
+    game: theNewGame,
+    classes: replaceClass(theState.classes, theOldGame.classId, (theClass) => reviseCommittedGame(theClass, theOldGame, theNewGame)),
+  }
+}
+
 function sanitizeSettings(theSettings: Settings): Settings {
   const theTurn = Math.round(clampNumber(theSettings.turnSeconds, MIN_TURN_SECONDS, MAX_TURN_SECONDS) / 5) * 5
   let theSyllableMin = clampNumber(theSettings.syllableMin, 1, 8)
@@ -295,8 +314,13 @@ export const useGameStore = create<GameStore>()(
         set({ settings: theNext })
       },
       resetSettings: () => {
-        const theTheme = get().settings.theme
-        set({ settings: { ...defaultSettings(), theme: theTheme } })
+        const theState = get()
+        // Resetting keeps the teams on screen, so the team count follows them instead of snapping back to 2.
+        let theTeamCount = defaultSettings().teamCount
+        if (theState.teams.length >= MIN_TEAMS) {
+          theTeamCount = theState.teams.length
+        }
+        set({ settings: { ...defaultSettings(), theme: theState.settings.theme, teamCount: theTeamCount } })
       },
       setShortcutsOpen: (theOpen) => set({ shortcutsOpen: theOpen }),
       setSettingsOpen: (theOpen) => set({ settingsOpen: theOpen }),
@@ -317,6 +341,27 @@ export const useGameStore = create<GameStore>()(
           thePlayers.push({ id: makeId('p'), name: theNames[n] })
         }
         set({ teams: replaceTeam(get().teams, theTeamId, (theTeam) => ({ ...theTeam, players: thePlayers, pickedGuesserId: null })) })
+      },
+      setTeamsFromRoster: (theRosterText) => {
+        const theRoster = parseRoster(theRosterText, MAX_TEAMS)
+        const theTeams: Team[] = []
+        for (let n = 0; n < theRoster.teams.length; n++) {
+          const theEntry = theRoster.teams[n]
+          let theName = theEntry.name
+          if (theName.length === 0) {
+            theName = defaultTeamName(n)
+          }
+          const thePlayers: Player[] = []
+          for (let i = 0; i < theEntry.players.length; i++) {
+            thePlayers.push({ id: makeId('p'), name: theEntry.players[i] })
+          }
+          theTeams.push(makeTeam(n, theName, thePlayers))
+        }
+        // A one-line paste still needs an opponent, so pad up to the minimum.
+        for (let n = theTeams.length; n < MIN_TEAMS; n++) {
+          theTeams.push(makeTeam(n, defaultTeamName(n), []))
+        }
+        set({ teams: theTeams, settings: { ...get().settings, teamCount: theTeams.length } })
       },
       loadLastTeams: () => {
         const theState = get()
@@ -847,6 +892,39 @@ export const useGameStore = create<GameStore>()(
           game: { ...theGame, history: theGame.history.concat([theRow]) },
           undoStack: pushUndo(theState.undoStack, 'Score edit', theGame, theState.teams),
         })
+      },
+      updateHistoryRow: (theRowId, theOutcome) => {
+        const theState = get()
+        const theHistory: TurnResult[] = []
+        let theChanged = false
+        for (let n = 0; n < theState.game.history.length; n++) {
+          const theRow = theState.game.history[n]
+          if (theRow.id === theRowId) {
+            const theNext = reviseRow(theRow, theOutcome, theState.settings.pointsPerCorrect, theState.settings.timeBonus)
+            theChanged = theNext !== theRow
+            theHistory.push(theNext)
+          } else {
+            theHistory.push(theRow)
+          }
+        }
+        if (theChanged) {
+          set(withRevisedHistory(theState, theHistory))
+        }
+      },
+      removeHistoryRow: (theRowId) => {
+        const theState = get()
+        const theHistory: TurnResult[] = []
+        for (let n = 0; n < theState.game.history.length; n++) {
+          if (theState.game.history[n].id !== theRowId) {
+            theHistory.push(theState.game.history[n])
+          }
+        }
+        if (theHistory.length !== theState.game.history.length) {
+          set(withRevisedHistory(theState, theHistory))
+        }
+      },
+      resetClassBoard: (theClassId, theCareersToo) => {
+        set({ classes: replaceClass(get().classes, theClassId, (theClass) => resetClassTotals(theClass, theCareersToo)) })
       },
       undo: () => {
         const theState = get()

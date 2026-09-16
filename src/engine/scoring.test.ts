@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { computeStandings, pointsForCorrect } from './scoring'
+import { computeStandings, pointsForCorrect, reviseRow } from './scoring'
 import type { Team, TurnResult } from './types'
 
 function team(theId: string): Team {
@@ -71,5 +71,34 @@ describe('computeStandings', () => {
     const theRows = computeStandings(theTeams, theHistory)
     expect(theRows[0].turns).toBe(2)
     expect(theRows[0].points).toBe(6)
+  })
+})
+
+describe('reviseRow', () => {
+  it('re-prices a time up as correct with the time bonus and notes the change', () => {
+    const theRow = { ...row('a', 'timeup', 0, 1), secondsLeft: 12, note: 'Ended early' }
+    const theNext = reviseRow(theRow, 'correct', 3, true)
+    expect(theNext.points).toBe(5)
+    expect(theNext.outcome).toBe('correct')
+    expect(theNext.note).toBe('Ended early. Changed from Time up')
+    const theBack = reviseRow(theNext, 'timeup', 3, true)
+    expect(theBack.points).toBe(0)
+    expect(theBack.note).toBe('Ended early')
+  })
+
+  it('leaves score edits alone and zeroes a skip', () => {
+    const theAdjust = row('a', 'adjust', 4, 1)
+    expect(reviseRow(theAdjust, 'correct', 1, false)).toBe(theAdjust)
+    const theSkip = reviseRow(row('a', 'correct', 2, 1), 'skip', 2, false)
+    expect(theSkip.points).toBe(0)
+    expect(theSkip.note).toBe('Changed from Correct')
+  })
+
+  it('recomputes standings after a row changes', () => {
+    const theRows = [row('a', 'correct', 1, 1), row('b', 'timeup', 0, 1)]
+    const theEdited = [theRows[0], reviseRow(theRows[1], 'correct', 1, false)]
+    const theStandings = computeStandings([team('a'), team('b')], theEdited)
+    expect(theStandings[0].rank).toBe(1)
+    expect(theStandings[1].rank).toBe(1)
   })
 })

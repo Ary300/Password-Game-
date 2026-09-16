@@ -1,8 +1,10 @@
+import { useState } from 'react'
 import { MAX_TEAMS, MIN_TEAMS } from '../../engine/defaults'
 import { absentIds } from '../../engine/roster'
 import { findClass, useGameStore } from '../../store/useGameStore'
 import Button from '../ui/Button'
 import Stepper from '../ui/Stepper'
+import PasteRosterModal from './PasteRosterModal'
 import TeamEditorRow from './TeamEditorRow'
 import { playersText, teamsComeFromClass } from './setupHelpers'
 
@@ -14,6 +16,8 @@ export default function QuickTeamsPanel({ onOpenClasses }: { onOpenClasses: () =
   const setTeamCount = useGameStore((theState) => theState.setTeamCount)
   const loadLastTeams = useGameStore((theState) => theState.loadLastTeams)
   const startGame = useGameStore((theState) => theState.startGame)
+  const setTeamPlayers = useGameStore((theState) => theState.setTeamPlayers)
+  const [thePasteOpen, setThePasteOpen] = useState(false)
 
   const theClass = findClass(theClasses, theActiveClassId)
   const theFromClass = teamsComeFromClass(theTeams, theClass)
@@ -25,6 +29,13 @@ export default function QuickTeamsPanel({ onOpenClasses }: { onOpenClasses: () =
     theRows.push(<TeamEditorRow key={theTeams[n].id + '|' + playersText(theTeams[n])} team={theTeams[n]} index={n} lockedPlayers={theFromClass} hiddenIds={theAbsentIds} />)
   }
 
+  // Clearing every roster frees the rows for typed names while keeping team names and colors.
+  function typeNamesInstead() {
+    for (let n = 0; n < theTeams.length; n++) {
+      setTeamPlayers(theTeams[n].id, '')
+    }
+  }
+
   let theClassNote = null
   if (theFromClass && theClass !== null) {
     theClassNote = (
@@ -32,9 +43,14 @@ export default function QuickTeamsPanel({ onOpenClasses }: { onOpenClasses: () =
         <span>
           Teams from <strong className="font-bold">{theClass.name}</strong>. Career stats count.
         </span>
-        <Button variant="ghost" size="sm" onClick={onOpenClasses}>
-          Move students
-        </Button>
+        <div className="flex shrink-0 gap-1">
+          <Button variant="ghost" size="sm" onClick={typeNamesInstead}>
+            Type names instead
+          </Button>
+          <Button variant="ghost" size="sm" onClick={onOpenClasses}>
+            Move students
+          </Button>
+        </div>
       </div>
     )
   }
@@ -63,7 +79,10 @@ export default function QuickTeamsPanel({ onOpenClasses }: { onOpenClasses: () =
           <span className="label text-lg">Teams</span>
           <Stepper label="team count" value={theTeams.length} min={MIN_TEAMS} max={MAX_TEAMS} onChange={setTeamCount} />
         </div>
-        <Button variant="ghost" size="md" className="ml-auto" onClick={loadLastTeams} disabled={theLastTeams.length < MIN_TEAMS} title={theLoadHint}>
+        <Button variant="ghost" size="md" className="ml-auto" onClick={() => setThePasteOpen(true)}>
+          Paste a roster
+        </Button>
+        <Button variant="ghost" size="md" onClick={loadLastTeams} disabled={theLastTeams.length < MIN_TEAMS} title={theLoadHint}>
           Load last game's teams
         </Button>
       </div>
@@ -74,6 +93,7 @@ export default function QuickTeamsPanel({ onOpenClasses }: { onOpenClasses: () =
           Start with these teams
         </Button>
       </div>
+      <PasteRosterModal open={thePasteOpen} onOpenChange={setThePasteOpen} />
     </div>
   )
 }

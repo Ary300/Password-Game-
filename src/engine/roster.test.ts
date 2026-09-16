@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { absentIds, defaultTeams, makeClass, parseNames, presentStudents, splitIntoTeams } from './roster'
+import { absentIds, defaultTeams, makeClass, parseNames, parseRoster, presentStudents, splitIntoTeams } from './roster'
 
 describe('roster helpers', () => {
   it('parses names from lines or commas and drops duplicates', () => {
@@ -34,5 +34,26 @@ describe('roster helpers', () => {
     const theClass = makeClass('Odd', 'A\nB\nC\nD\nE')
     const theTeams = splitIntoTeams(theClass.students, 2, () => 0.3, [])
     expect(Math.abs(theTeams[0].players.length - theTeams[1].players.length)).toBeLessThanOrEqual(1)
+  })
+
+  it('parses a pasted roster with one team per line', () => {
+    const theRoster = parseRoster('Lions: Ana, Ben, Cy\n\n  Tigers :Dee\nBears', 8)
+    expect(theRoster.teams).toEqual([
+      { name: 'Lions', players: ['Ana', 'Ben', 'Cy'] },
+      { name: 'Tigers', players: ['Dee'] },
+      { name: 'Bears', players: [] },
+    ])
+    expect(theRoster.ignored).toBe(0)
+  })
+  it('keeps a blank team name and ignores lines past the limit', () => {
+    const theRoster = parseRoster(': Ana\nB\nC\nD', 2)
+    expect(theRoster.teams).toEqual([
+      { name: '', players: ['Ana'] },
+      { name: 'B', players: [] },
+    ])
+    expect(theRoster.ignored).toBe(2)
+  })
+  it('returns no teams for empty text', () => {
+    expect(parseRoster('  \n\n', 8)).toEqual({ teams: [], ignored: 0 })
   })
 })

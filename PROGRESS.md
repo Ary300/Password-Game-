@@ -49,6 +49,13 @@ Each one picks the option that is simplest for a teacher standing at a projector
 
 Other QA fixes: Enter on the podium no longer wipes results while a teacher is still pressing Enter, a turn keeps the length it started with, undo no longer reaches into a turn that ran out of time, and podium copy.
 
+## Functionality audit (second pass)
+
+Three agents clicked through every control at 1920x1080, 1280x720, and the user's 1000x563 laptop window, and played six complete game modes to the podium.
+
+- Added: paste a roster, clear a team's players, quick +1/-1 score fixes on Live and Team up, End game from Live and Team up, fullscreen button, Show word when reveal is off, edit or remove any history row with scores and careers recomputed, Players tab with per-student stats, class board reset and top guessers.
+- Fixed: timer digits overlapping the ring, word clipped under the Paused label, key caps over button labels, top bar links hidden below 1024px, podium and setup layouts at laptop size, turn counts inflated by guesser swaps, reset settings leaving extra teams, hold key starting a countdown.
+
 ## Next
 
 - Enable GitHub Pages and run the deploy workflow when the class wants a public link.

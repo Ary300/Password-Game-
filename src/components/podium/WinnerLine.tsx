@@ -43,7 +43,7 @@ export default function WinnerLine({ standings, final, delay, large }: WinnerLin
     }
   }
 
-  let theHeadlineSize = 'text-[clamp(3.5rem,10vh,6rem)]'
+  let theHeadlineSize = 'text-[clamp(2.75rem,10vh,6rem)]'
   if (large) {
     theHeadlineSize = 'text-[clamp(5rem,13vh,8rem)]'
   }
@@ -55,12 +55,12 @@ export default function WinnerLine({ standings, final, delay, large }: WinnerLin
 
   let theDetailLine = null
   if (theDetail !== '') {
-    theDetailLine = <p className="display pb-1 text-3xl text-muted">{theDetail}</p>
+    theDetailLine = <p className="display truncate pb-1 text-2xl text-muted xl:text-3xl">{theDetail}</p>
   }
 
   return (
     <motion.div
-      className="varsity-cut flex items-end gap-6 border-l-8 bg-surface-2 py-3 pr-20 pl-6"
+      className="varsity-cut flex items-end gap-6 border-l-8 bg-surface-2 py-2 pr-20 pl-6 xl:py-3"
       style={{ borderLeftColor: theColor }}
       initial={theInitial}
       animate={{ opacity: 1, x: 0 }}

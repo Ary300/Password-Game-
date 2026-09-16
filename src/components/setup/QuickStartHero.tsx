@@ -17,15 +17,16 @@ export default function QuickStartHero() {
   }
 
   let theNotice = null
-  if (thePhase !== 'setup') {
+  // A finished game on the podium has nothing left to lose, so only a game in progress earns the warning.
+  if (thePhase === 'teamup' || thePhase === 'live') {
     theNotice = <p className="mt-1 font-bold text-white">A game is running. Starting again ends it.</p>
   }
 
   return (
-    <section className="@container varsity-cut mesh flex h-full min-h-0 flex-col bg-crimson text-white" aria-labelledby="setup-title">
-      <div className="flex min-h-0 flex-1 flex-col pt-6 pr-14 pl-7 xl:pt-8 xl:pr-20 xl:pl-10">
+    <section className="@container varsity-cut mesh flex min-h-[calc(100dvh-3.5rem)] flex-col lg:h-full lg:min-h-0 bg-crimson text-white" aria-labelledby="setup-title">
+      <div className="flex flex-1 flex-col pt-6 lg:min-h-0 pr-14 pl-7 xl:pt-8 xl:pr-20 xl:pl-10">
         <p className="font-display text-2xl font-extrabold text-gold xl:text-3xl">Park Tudor Panthers</p>
-        <h1 id="setup-title" className="display -ml-1 text-[clamp(88px,23cqw,300px)] leading-[0.8]">
+        <h1 id="setup-title" className="display -ml-1 text-[clamp(88px,min(23cqw,26vh),300px)] leading-[0.8]">
           Password
         </h1>
         <p className="mt-3 text-lg font-semibold text-white/90 xl:text-2xl">Mr. Ritz's classroom word game</p>

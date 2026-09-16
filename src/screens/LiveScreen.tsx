@@ -2,11 +2,14 @@ import { MotionConfig } from 'motion/react'
 import { toast } from 'sonner'
 import CareerCard from '../components/live/CareerCard'
 import CountdownDisplay from '../components/live/CountdownDisplay'
+import EndGameButton from '../components/live/EndGameButton'
 import LiveControls from '../components/live/LiveControls'
 import LiveEmptyState from '../components/live/LiveEmptyState'
 import LiveTeamPanel from '../components/live/LiveTeamPanel'
 import LiveTurnStats from '../components/live/LiveTurnStats'
 import ResultBanner from '../components/live/ResultBanner'
+import ScoreNudge from '../components/live/ScoreNudge'
+import { nudgeScore } from '../components/live/nudgeScore'
 import StandingsStrip from '../components/live/StandingsStrip'
 import SwapModal from '../components/live/SwapModal'
 import TimerRing from '../components/live/TimerRing'
@@ -20,6 +23,29 @@ import { useNow } from '../hooks/useNow'
 import { useGameStore, turnSecondsOf } from '../store/useGameStore'
 
 export type ScreenMode = 'control' | 'projector'
+
+function nudgeCurrentTeam(num: number) {
+  const theTurn = useGameStore.getState().game.turn
+  if (theTurn !== null) {
+    nudgeScore(theTurn.teamId, num)
+  }
+}
+
+function pointsLine(thePoints: number, theBonus: number): string {
+  let theSign = '+'
+  if (thePoints < 0) {
+    theSign = ''
+  }
+  let theNoun = ' points this turn'
+  if (thePoints === 1) {
+    theNoun = ' point this turn'
+  }
+  let theText = theSign + String(thePoints) + theNoun
+  if (theBonus > 0) {
+    theText = theText + ', ' + String(theBonus) + ' from time bonus'
+  }
+  return theText
+}
 
 function undoWithToast() {
   const theLabel = useGameStore.getState().undo()
@@ -68,6 +94,9 @@ export default function LiveScreen({ mode }: { mode: ScreenMode }) {
           useGameStore.getState().nextTeam(Date.now())
         }
       },
+      '+': () => nudgeCurrentTeam(1),
+      '=': () => nudgeCurrentTeam(1),
+      '-': () => nudgeCurrentTeam(-1),
     },
     theIsControl && theGame.phase === 'live' && theTurn !== null,
   )
@@ -95,9 +124,14 @@ export default function LiveScreen({ mode }: { mode: ScreenMode }) {
     }
   }
   let theTurnPoints = 0
+  let theBonusPoints = 0
   for (let n = 0; n < theGame.history.length; n++) {
-    if (theGame.history[n].turnId === theTurn.turnId) {
-      theTurnPoints = theTurnPoints + theGame.history[n].points
+    const theRow = theGame.history[n]
+    if (theRow.turnId === theTurn.turnId) {
+      theTurnPoints = theTurnPoints + theRow.points
+      if (theRow.outcome === 'correct') {
+        theBonusPoints = theBonusPoints + Math.max(0, theRow.points - theSettings.pointsPerCorrect)
+      }
     }
   }
 
@@ -115,7 +149,7 @@ export default function LiveScreen({ mode }: { mode: ScreenMode }) {
       thePausedText = 'Paused, swapping guesser'
     }
     theStatus = (
-      <div className="display bg-gold px-10 pt-2 pb-1 text-[clamp(40px,6vh,68px)] text-gold-ink" role="status">
+      <div className="display bg-gold px-10 pt-1.5 pb-0.5 text-[clamp(28px,5.5vh,68px)] leading-none text-gold-ink" role="status">
         {thePausedText}
       </div>
     )
@@ -148,13 +182,20 @@ export default function LiveScreen({ mode }: { mode: ScreenMode }) {
         revealWord={theSettings.revealOnTimeUp}
         autoAdvance={theSettings.autoAdvance}
         showNextButton={theIsControl}
+        showPeek={theIsControl}
+        pointsText={pointsLine(theTurnPoints, theBonusPoints)}
         onNext={() => useGameStore.getState().nextTeam(Date.now())}
+        onUndo={undoWithToast}
       />
     )
   }
 
   let theSwapModal = null
+  let theEndGame = null
+  let theScoreControl = null
   if (theIsControl) {
+    theEndGame = <EndGameButton className="absolute top-3 right-4 z-10" />
+    theScoreControl = <ScoreNudge teamId={theTeam.id} teamName={theTeam.name} direction="row" />
     theSwapModal = (
       <SwapModal
         open={theTurn.swapOpen && !theTurnEnded}
@@ -168,10 +209,11 @@ export default function LiveScreen({ mode }: { mode: ScreenMode }) {
 
   return (
     <MotionConfig reducedMotion="user">
-      <section className="relative flex h-full flex-col overflow-hidden bg-bg" style={{ ['--timer-ring' as string]: 'clamp(280px, 38vh, 420px)' }} aria-label="Live turn">
+      <section className="relative flex h-full flex-col overflow-hidden bg-bg" style={{ ['--timer-ring' as string]: 'clamp(170px, 38vh, 420px)' }} aria-label="Live turn">
         <StandingsStrip standings={theStandings} currentTeamId={theTeam.id} round={theGame.round} roundsPerGame={theSettings.roundsPerGame} showRound={!theIsControl} />
         <div className="relative flex min-h-0 flex-1 flex-col items-center">
-          <div className="flex h-[clamp(56px,9vh,96px)] shrink-0 items-center justify-center">{theStatus}</div>
+          {theEndGame}
+          <div className="flex h-[clamp(48px,9vh,96px)] shrink-0 items-center justify-center overflow-hidden">{theStatus}</div>
           <div className="min-h-0 w-full flex-1 px-6 pb-[2vh]">{theStage}</div>
         </div>
         <div className="grid shrink-0 grid-cols-[auto_minmax(0,1fr)_auto] items-stretch gap-8 border-t-8 bg-surface py-5 pl-8" style={{ borderColor: theTeam.color }}>
@@ -185,6 +227,7 @@ export default function LiveScreen({ mode }: { mode: ScreenMode }) {
             guesser={theTurn.guesser}
             showSwap={theIsControl && theCanSwap}
             onSwap={() => useGameStore.getState().openSwap(Date.now())}
+            scoreControl={theScoreControl}
           />
         </div>
         {theBanner}

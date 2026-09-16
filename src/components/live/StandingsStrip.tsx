@@ -18,10 +18,10 @@ export default function StandingsStrip({ standings, currentTeamId, round, rounds
       theFill = 'bg-surface-3'
     }
     theSegments.push(
-      <li key={theRow.teamId} className={'flex min-w-0 flex-1 items-center gap-3 border-t-8 px-4 py-2 ' + theFill} style={{ borderColor: theRow.color }}>
-        <span className="display tabular shrink-0 text-[clamp(20px,2.6vh,28px)] text-muted">{theRow.rank}</span>
-        <span className="display min-w-0 flex-1 truncate pb-0.5 text-[clamp(22px,3vh,34px)]">{theRow.name}</span>
-        <span className="display tabular text-[clamp(28px,4vh,46px)] text-gold">{theRow.points}</span>
+      <li key={theRow.teamId} className={'flex min-w-0 flex-1 basis-0 items-center gap-[clamp(4px,0.8vw,12px)] overflow-hidden border-t-8 px-[clamp(6px,1vw,16px)] py-2 ' + theFill} style={{ borderColor: theRow.color }}>
+        <span className="display tabular shrink-0 text-[clamp(16px,min(2.6vh,1.6vw),28px)] text-muted">{theRow.rank}</span>
+        <span className="display min-w-0 flex-1 truncate pb-0.5 text-[clamp(16px,min(3vh,1.9vw),34px)]">{theRow.name}</span>
+        <span className="display tabular shrink-0 text-[clamp(20px,min(4vh,2.4vw),46px)] text-gold">{theRow.points}</span>
       </li>,
     )
   }

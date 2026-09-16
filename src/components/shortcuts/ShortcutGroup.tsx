@@ -15,7 +15,7 @@ export default function ShortcutGroup({ group }: ShortcutGroupProps) {
     }
     theRows.push(
       <tr key={theShortcut.action} className="border-b border-line/60 last:border-b-0">
-        <td className="w-px py-1.5 pr-5 whitespace-nowrap">
+        <td className="w-[10.5rem] py-1.5 pr-4 whitespace-nowrap">
           <span className="flex gap-1">{theKeys}</span>
         </td>
         <td className="py-1.5 text-base font-semibold">{theShortcut.action}</td>

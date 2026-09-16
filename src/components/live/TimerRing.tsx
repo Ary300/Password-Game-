@@ -25,13 +25,17 @@ export default function TimerRing({ msLeft, totalMs, paused }: TimerRingProps) {
     }
   }
   const theText = formatSeconds(theSeconds)
-  // Two digits get the 200px-plus size; minute readouts like 1:05 shrink so they stay inside the ring.
-  let theScale = 0.72
+  // Sized to the ring's inner circle: the digits and caption together must fit a square inscribed in it,
+  // so wider readouts like 1:05 get a smaller scale.
+  let theScale = 0.5
+  if (theText.length === 1) {
+    theScale = 0.52
+  }
   if (theText.length === 3) {
-    theScale = 0.5
+    theScale = 0.32
   }
   if (theText.length > 3) {
-    theScale = 0.4
+    theScale = 0.26
   }
   let theCaption = 'seconds'
   if (paused) {
@@ -49,11 +53,13 @@ export default function TimerRing({ msLeft, totalMs, paused }: TimerRingProps) {
       aria-label={String(theSeconds) + ' seconds left'}
     >
       <ProgressRing fraction={theFraction} color={theColor} strokeWidth={9} className="absolute inset-0 h-full w-full" />
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="display tabular" style={{ fontSize: 'calc(var(--timer-ring) * ' + String(theScale) + ')', color: theNumberColor }}>
+      <div className="absolute inset-[16%] flex flex-col items-center justify-center overflow-hidden">
+        <span className="display tabular block leading-[0.8]" style={{ fontSize: 'calc(var(--timer-ring) * ' + String(theScale) + ')', color: theNumberColor }}>
           {theText}
         </span>
-        <span className="label mt-2 text-lg">{theCaption}</span>
+        <span className="label mt-[0.6em] leading-none" style={{ fontSize: 'calc(var(--timer-ring) * 0.055)' }}>
+          {theCaption}
+        </span>
       </div>
     </div>
   )

@@ -5,6 +5,7 @@ const MIN_WORD_PX = 120
 const MEASURE_PX = 100
 const WIDTH_SHARE = 0.85
 const VIEWPORT_HEIGHT_CAP = 0.3
+const MIN_FIT_PX = 48
 
 // Measuring a hidden copy at a known size gives an exact fit for any word and any font width, no per-letter guessing.
 export default function WordDisplay({ word }: { word: string }) {
@@ -24,9 +25,10 @@ export default function WordDisplay({ word }: { word: string }) {
         return
       }
       let theNext = (theBoxEl.clientWidth * WIDTH_SHARE * MEASURE_PX) / theTextWidth
-      const theHeightCap = Math.min(window.innerHeight * VIEWPORT_HEIGHT_CAP, theBoxEl.clientHeight * 0.9)
-      theNext = Math.min(theNext, theHeightCap)
       theNext = Math.max(MIN_WORD_PX, theNext)
+      // The height cap wins over the minimum: on a short laptop window a clipped word is worse than a smaller one.
+      const theHeightCap = Math.max(MIN_FIT_PX, Math.min(window.innerHeight * VIEWPORT_HEIGHT_CAP, theBoxEl.clientHeight * 0.85))
+      theNext = Math.min(theNext, theHeightCap)
       setTheSize(Math.floor(theNext))
     }
     fit(theBox, theMeasure)

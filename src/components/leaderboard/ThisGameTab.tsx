@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { gameTotals } from '../../engine/career'
 import { resultsToCsv } from '../../engine/csv'
 import { useStandings } from '../../hooks/useGameView'
 import { routeForPhase } from '../../hooks/usePhaseRoute'
@@ -98,7 +99,7 @@ export default function ThisGameTab() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
+      <div className="mb-3 flex flex-wrap items-end justify-between gap-3 xl:mb-4 xl:gap-4">
         <dl className="flex items-end gap-8">
           <div>
             <dt className="label">Game</dt>
@@ -106,7 +107,7 @@ export default function ThisGameTab() {
           </div>
           <div>
             <dt className="label">Turns</dt>
-            <dd className="display tabular mt-1 text-4xl">{theGame.turnsLog.length}</dd>
+            <dd className="display tabular mt-1 text-4xl">{gameTotals(theGame).turns}</dd>
           </div>
           <div>
             <dt className="label">Words guessed</dt>
@@ -125,7 +126,9 @@ export default function ThisGameTab() {
       <div className={'label border-l-8 border-transparent pr-5 pb-2 pl-3 ' + STANDING_GRID}>
         <span className="text-center">Rank</span>
         <span>Team</span>
-        <span className="text-right">Points, click to edit</span>
+        <span className="text-right" title="Click a score to edit it">
+          Points<span className="hidden xl:inline">, click to edit</span>
+        </span>
         <span className="text-right">Correct</span>
         <span className="text-right">Skipped</span>
         <span className="text-right">Turns</span>
