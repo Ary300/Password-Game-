@@ -8,7 +8,10 @@ import WinnerLine from '../components/podium/WinnerLine'
 import Button from '../components/ui/Button'
 import { resultsToCsv } from '../engine/csv'
 import { useStandings } from '../hooks/useGameView'
+import { useEffect, useState } from 'react'
 import { useHotkeys } from '../hooks/useHotkeys'
+
+const PODIUM_ENTER_DELAY_MS = 2500
 import { downloadText } from '../lib/download'
 import { useGameStore } from '../store/useGameStore'
 
@@ -26,7 +29,13 @@ export default function PodiumScreen({ mode }: { mode: ScreenMode }) {
   const theControl = mode === 'control'
   const theLarge = mode === 'projector'
 
-  useHotkeys({ Enter: playAgain }, theControl && theFinal)
+  const [theEnterReady, setTheEnterReady] = useState(false)
+  useEffect(() => {
+    // A teacher still tapping Enter for Correct when the podium appears must not wipe the results.
+    const theTimer = window.setTimeout(() => setTheEnterReady(true), PODIUM_ENTER_DELAY_MS)
+    return () => window.clearTimeout(theTimer)
+  }, [])
+  useHotkeys({ Enter: playAgain }, theControl && theFinal && theEnterReady)
 
   if (!theFinal && theGame.history.length === 0) {
     let theAction = null

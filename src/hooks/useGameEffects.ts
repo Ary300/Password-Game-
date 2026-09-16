@@ -13,7 +13,7 @@ import {
   playTick,
   setMuted,
 } from '../lib/sound'
-import { currentTeamOf, useGameStore } from '../store/useGameStore'
+import { currentTeamOf, turnSecondsOf, useGameStore } from '../store/useGameStore'
 
 const DRIVER_INTERVAL_MS = 100
 
@@ -27,6 +27,7 @@ export function useGameDriver(theIsController: boolean): void {
     let theLastTickSecond = -1
     let theLastCountdownSecond = -1
     let theWentLive = ''
+    let theDeadlineTimer = 0
     function step() {
       const theState = useGameStore.getState()
       const theGame = theState.game
@@ -48,10 +49,16 @@ export function useGameDriver(theIsController: boolean): void {
                 playGoBeep()
               }
             }
-            const theMs = remainingMs(theTurn.startedAt, null, theNow, theState.settings.turnSeconds)
+            const theMs = remainingMs(theTurn.startedAt, null, theNow, turnSecondsOf(theTurn, theState.settings))
             const theSeconds = secondsLeftFromMs(theMs)
             if (theMs <= 0) {
               theState.timeUp(theNow)
+            } else if (theMs < DRIVER_INTERVAL_MS * 2 && theDeadlineTimer === 0) {
+              // The interval alone lands up to 100 ms late; a one-off timeout hits the buzzer on time.
+              theDeadlineTimer = window.setTimeout(() => {
+                theDeadlineTimer = 0
+                step()
+              }, theMs)
             } else if (theSeconds <= RED_AT_SECONDS && theSeconds !== theLastTickSecond) {
               theLastTickSecond = theSeconds
               if (theSeconds <= 2) {
@@ -75,6 +82,7 @@ export function useGameDriver(theIsController: boolean): void {
     document.addEventListener('visibilitychange', step)
     return () => {
       window.clearInterval(theTimer)
+      window.clearTimeout(theDeadlineTimer)
       document.removeEventListener('visibilitychange', step)
     }
   }, [theIsController])

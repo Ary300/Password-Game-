@@ -55,6 +55,7 @@ export type Turn = {
   word: WordEntry
   wordShownAt: number
   startedAt: number
+  turnMs: number
   pausedAt: number | null
   skipsUsed: number
   swapOpen: boolean

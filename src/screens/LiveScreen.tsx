@@ -17,7 +17,7 @@ import type { Player } from '../engine/types'
 import { useAbsentIds, useCurrentTeam, useStandings } from '../hooks/useGameView'
 import { useHotkeys } from '../hooks/useHotkeys'
 import { useNow } from '../hooks/useNow'
-import { useGameStore } from '../store/useGameStore'
+import { useGameStore, turnSecondsOf } from '../store/useGameStore'
 
 export type ScreenMode = 'control' | 'projector'
 
@@ -76,14 +76,14 @@ export default function LiveScreen({ mode }: { mode: ScreenMode }) {
     return <LiveEmptyState phase={theGame.phase} projector={!theIsControl} />
   }
 
-  const theTotalMs = theSettings.turnSeconds * 1000
+  const theTotalMs = turnSecondsOf(theTurn, theSettings) * 1000
   let theClock = theNow
   if (theTurn.pausedAt !== null) {
     theClock = theTurn.pausedAt
   } else if (theTurn.end !== null) {
     theClock = theTurn.end.at
   }
-  const theMsLeft = Math.min(theTotalMs, remainingMs(theTurn.startedAt, null, theClock, theSettings.turnSeconds))
+  const theMsLeft = Math.min(theTotalMs, remainingMs(theTurn.startedAt, null, theClock, turnSecondsOf(theTurn, theSettings)))
   const theCounting = theClock < theTurn.startedAt
   const thePaused = theTurn.pausedAt !== null
   const theSkipsLeft = Math.max(0, theSettings.skipsPerTurn - theTurn.skipsUsed)

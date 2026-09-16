@@ -36,7 +36,7 @@ export default function StandingsTable({ standings, large }: StandingsTableProps
         <span className={'display tabular text-center ' + theNameSize + ' ' + theRankTone}>{theRow.rank}</span>
         <span className={'display truncate pb-0.5 ' + theNameSize}>{theRow.name}</span>
         <span className={theStatsClass}>
-          {theRow.correct} correct, {theRow.skipped} skipped, {theRow.turns} turns
+          {theRow.correct} correct, {theRow.skipped} skipped, {theRow.turns} {theRow.turns === 1 ? 'turn' : 'turns'}
         </span>
         <span className={'display tabular text-right text-gold ' + theNameSize}>{theRow.points}</span>
       </li>,

@@ -25,3 +25,10 @@ export function keyName(theEvent: KeyboardEvent): string {
   }
   return theEvent.key
 }
+
+export function isActivatable(theTarget: EventTarget | null): boolean {
+  if (!(theTarget instanceof HTMLElement)) {
+    return false
+  }
+  return theTarget.closest('button, a[href], [role="tab"], [role="button"], [role="switch"], [role="checkbox"], summary') !== null
+}

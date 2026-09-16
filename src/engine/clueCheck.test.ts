@@ -13,7 +13,8 @@ describe('checkClue rules', () => {
     expect(checkClue('bananas', 'banana', [], theKnown).allowed).toBe(false)
     expect(checkClue('bananasplit', 'banana', [], theKnown).reasons.join(' ')).toContain('contains the word')
     expect(checkClue('tele', 'telescope', [], theKnown).reasons.join(' ')).toContain('contains the clue')
-    expect(checkClue('cat', 'catalog', [], theKnown).allowed).toBe(true)
+    expect(checkClue('ear', 'bear', [], theKnown).allowed).toBe(false)
+    expect(checkClue('at', 'catalog', [], theKnown).allowed).toBe(true)
   })
   it('rule 3: flags a shared stem after stripping common suffixes', () => {
     const theVerdict = checkClue('jumping', 'jumped', [], theKnown)
@@ -21,6 +22,9 @@ describe('checkClue rules', () => {
     expect(theVerdict.reasons.join(' ')).toContain('Same root word')
     expect(stripSuffix('happiest')).toBe('happi')
     expect(stripSuffix('quickly')).toBe('quick')
+    expect(checkClue('running', 'run', [], theKnown).allowed).toBe(false)
+    expect(stripSuffix('running')).toBe('run')
+    expect(stripSuffix('falling')).toBe('fall')
   })
   it('rule 4: flags clues within Levenshtein distance 2 for words of 5+ letters', () => {
     expect(levenshtein('kitten', 'sitting')).toBe(3)

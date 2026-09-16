@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { isDialogOpen, isTypingTarget, keyName } from '../lib/keyboard'
+import { isActivatable, isDialogOpen, isTypingTarget, keyName } from '../lib/keyboard'
 
 export type HotkeyMap = Record<string, (theEvent: KeyboardEvent) => void>
 
@@ -15,7 +15,11 @@ export function useHotkeys(theMap: HotkeyMap, theEnabled: boolean): void {
       if (theEvent.metaKey || theEvent.ctrlKey || theEvent.altKey || theEvent.repeat) {
         return
       }
-      if (isTypingTarget(theEvent.target) || isDialogOpen()) {
+      if (theEvent.defaultPrevented || isTypingTarget(theEvent.target) || isDialogOpen()) {
+        return
+      }
+      // A focused button already acts on Enter or Space, so the hotkey would fire a second, different action.
+      if ((theEvent.key === 'Enter' || theEvent.key === ' ') && isActivatable(theEvent.target)) {
         return
       }
       const theHandler = theRef.current[keyName(theEvent)]
@@ -25,7 +29,8 @@ export function useHotkeys(theMap: HotkeyMap, theEnabled: boolean): void {
       theEvent.preventDefault()
       theHandler(theEvent)
     }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    // Capture phase runs before Radix closes a dialog on Escape, so the dialog still counts as open here.
+    window.addEventListener('keydown', onKey, true)
+    return () => window.removeEventListener('keydown', onKey, true)
   }, [theEnabled])
 }

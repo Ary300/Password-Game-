@@ -15,10 +15,24 @@ export function stripSuffix(theWord: string): string {
   for (let n = 0; n < theSuffixes.length; n++) {
     const theSuffix = theSuffixes[n]
     if (theWord.length > theSuffix.length + 2 && theWord.endsWith(theSuffix)) {
-      return theWord.slice(0, theWord.length - theSuffix.length)
+      const theStem = theWord.slice(0, theWord.length - theSuffix.length)
+      return undoubleEnding(theStem, theSuffix)
     }
   }
   return theWord
+}
+
+// "running" strips to "runn"; dropping the doubled consonant lets it match "run".
+function undoubleEnding(theStem: string, theSuffix: string): string {
+  if (theSuffix === 's' || theSuffix === 'es' || theSuffix === 'ly' || theStem.length < 3) {
+    return theStem
+  }
+  const theLast = theStem[theStem.length - 1]
+  const thePrev = theStem[theStem.length - 2]
+  if (theLast === thePrev && 'aeiouls'.indexOf(theLast) === -1) {
+    return theStem.slice(0, theStem.length - 1)
+  }
+  return theStem
 }
 
 export function levenshtein(theA: string, theB: string): number {
@@ -76,7 +90,7 @@ export function checkClue(theClueText: string, theWordText: string, theCustomBan
   if (theClue === theWord) {
     theReasons.push('The clue is the word itself.')
   }
-  if (theClue !== theWord && theWord.length >= 4 && theClue.length >= 4) {
+  if (theClue !== theWord && theWord.length >= 4 && theClue.length >= 3) {
     if (theClue.indexOf(theWord) !== -1) {
       theReasons.push('The clue contains the word "' + theWord + '".')
     } else if (theWord.indexOf(theClue) !== -1 && !isCompoundPart(theClue, theWord, theKnownWords)) {

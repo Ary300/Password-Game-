@@ -29,9 +29,9 @@ export default function WinnerLine({ standings, final, delay, large }: WinnerLin
   let theHeadline = ''
   let theDetail = ''
   if (theNames.length === 1) {
-    theHeadline = theNames[0] + ' win'
+    theHeadline = theNames[0] + ' takes it'
     if (!final) {
-      theHeadline = theNames[0] + ' lead'
+      theHeadline = theNames[0] + ' in front'
     }
   }
   if (theNames.length > 1) {

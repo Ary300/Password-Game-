@@ -10,6 +10,7 @@ import {
   MAX_SKIPS,
   MAX_TEAMS,
   MAX_TURN_SECONDS,
+  MIN_POOL_SIZE,
   MIN_TEAMS,
   MIN_TURN_SECONDS,
   STORE_KEY,
@@ -134,11 +135,27 @@ function drawWord(theSettings: Settings, theGame: GameState): { word: WordEntry 
   if (theWord === null) {
     return { word: null, usedWords: theUsed, warning: theWarning }
   }
+  const theLeft = thePool.length - 1
+  if (theLeft < MIN_POOL_SIZE && theWarning.indexOf('word list restarted') === -1) {
+    let theNoun = ' words left'
+    if (theLeft === 1) {
+      theNoun = ' word left'
+    }
+    theWarning.push('only ' + String(theLeft) + theNoun + ', words will repeat soon')
+  }
   return { word: theWord, usedWords: theUsed.concat([theWord.word]), warning: theWarning }
 }
 
-function secondsLeftAt(theTurn: Turn, theNow: number, turnSeconds: number): number {
-  return secondsLeftFromMs(remainingMs(theTurn.startedAt, theTurn.pausedAt, theNow, turnSeconds))
+// The turn keeps the length it started with, so changing the setting mid-turn only affects the next turn.
+export function turnSecondsOf(theTurn: Turn, theSettings: Settings): number {
+  if (typeof theTurn.turnMs === 'number' && theTurn.turnMs > 0) {
+    return theTurn.turnMs / 1000
+  }
+  return theSettings.turnSeconds
+}
+
+function secondsLeftAt(theTurn: Turn, theNow: number, theSettings: Settings): number {
+  return secondsLeftFromMs(remainingMs(theTurn.startedAt, theTurn.pausedAt, theNow, turnSecondsOf(theTurn, theSettings)))
 }
 
 function clockNow(theTurn: Turn, theNow: number): number {
@@ -160,7 +177,7 @@ function makeResult(theGame: GameState, theTurn: Turn, theOutcome: TurnResult['o
     swappedFrom: theTurn.swappedFrom,
     word: theTurn.word.word,
     outcome: theOutcome,
-    secondsLeft: secondsLeftAt(theTurn, theNow, theSettings.turnSeconds),
+    secondsLeft: secondsLeftAt(theTurn, theNow, theSettings),
     elapsedMs: Math.max(0, theClock - theTurn.wordShownAt),
     points: thePoints,
     at: theNow,
@@ -516,6 +533,7 @@ export const useGameStore = create<GameStore>()(
           word: theDraw.word,
           wordShownAt: theStart,
           startedAt: theStart,
+          turnMs: theState.settings.turnSeconds * 1000,
           pausedAt: null,
           skipsUsed: 0,
           swapOpen: false,
@@ -546,7 +564,7 @@ export const useGameStore = create<GameStore>()(
           return
         }
         const theSettings = theState.settings
-        const theLeft = secondsLeftAt(theTurn, theNow, theSettings.turnSeconds)
+        const theLeft = secondsLeftAt(theTurn, theNow, theSettings)
         const thePoints = pointsForCorrect(theSettings.pointsPerCorrect, theSettings.timeBonus, theLeft)
         const theRow = makeResult(theGame, theTurn, 'correct', thePoints, theNow, theSettings)
         const theUndo = pushUndo(theState.undoStack, 'Correct: ' + theTurn.word.word, theGame, theState.teams)
@@ -636,10 +654,13 @@ export const useGameStore = create<GameStore>()(
         if (theGame.phase !== 'live' || theTurn === null || theTurn.end !== null || theTurn.pausedAt !== null) {
           return
         }
-        if (remainingMs(theTurn.startedAt, null, theNow, theState.settings.turnSeconds) > 0) {
+        const theTurnSeconds = turnSecondsOf(theTurn, theState.settings)
+        if (remainingMs(theTurn.startedAt, null, theNow, theTurnSeconds) > 0) {
           return
         }
-        const theRow = makeResult(theGame, theTurn, 'timeup', 0, theNow, theState.settings)
+        // Record the true deadline, not the moment the driver noticed it.
+        const theDeadline = theTurn.startedAt + theTurnSeconds * 1000
+        const theRow = makeResult(theGame, theTurn, 'timeup', 0, theDeadline, theState.settings)
         set({
           game: {
             ...theGame,
@@ -685,6 +706,11 @@ export const useGameStore = create<GameStore>()(
           get().endGame()
           return
         }
+        // A turn that ran out of time has nothing worth undoing from the next team's screen.
+        let theUndoStack = theState.undoStack
+        if (theGame.turn !== null && theGame.turn.end !== null && theGame.turn.end.outcome === 'timeup') {
+          theUndoStack = []
+        }
         let theHandoff: number | null = null
         if (theState.settings.autoAdvance) {
           theHandoff = theNow + theState.settings.handoffSeconds * 1000
@@ -699,6 +725,7 @@ export const useGameStore = create<GameStore>()(
             handoffEndsAt: theHandoff,
             handoffHeld: false,
           },
+          undoStack: theUndoStack,
         })
       },
       skipTeam: (theNow) => {

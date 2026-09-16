@@ -27,7 +27,11 @@ export default function StudentTile({ student, onToggleAbsent, onRemove }: Stude
 
   let theCareer = 'No turns yet'
   if (student.career.turns > 0) {
-    theCareer = String(student.career.correct) + ' correct in ' + String(student.career.turns) + ' turns'
+    let theTurnWord = ' turns'
+    if (student.career.turns === 1) {
+      theTurnWord = ' turn'
+    }
+    theCareer = String(student.career.correct) + ' correct in ' + String(student.career.turns) + theTurnWord
   }
 
   return (

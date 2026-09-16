@@ -60,7 +60,7 @@ export default function TeamUpScreen({ mode }: { mode: ScreenMode }) {
   const theGuesserId = resolveGuesserId(theTeam, theGame.turnsLog, theAbsentIds)
   const theGuesserName = playerName(theTeam, theGuesserId)
 
-  let theGuesserLine = <p className="display pt-[0.06em] text-[clamp(48px,9vh,120px)]">Pick a guesser</p>
+  let theGuesserLine = <p className="display pt-[0.06em] text-[clamp(48px,9vh,120px)]">Guesser, turn around</p>
   if (theGuesserName.length > 0) {
     theGuesserLine = (
       <p className="display pt-[0.06em] text-[clamp(48px,9vh,120px)]">

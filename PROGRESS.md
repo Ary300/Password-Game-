@@ -25,14 +25,30 @@ Each one picks the option that is simplest for a teacher standing at a projector
 
 ## Done
 
-- Phase 0: Vite, React, TypeScript, Tailwind v4, Zustand, React Router (hash) scaffold.
-- Phase 1: Word list build script from CMUdict and frequency data, pickWord with filters and no repeats.
-- Engine: scoring, ranking, timer math, clue checker, rotation, rosters, careers, class board, CSV, with Vitest coverage.
-- Store: full turn flow, auto hand-off, classes, swap, undo, persistence.
-- Sounds: countdown beeps, last-five-seconds ticks, time-up buzzer, correct chime, skip, podium fanfare.
+- Phase 0 to 8 and 11 to 13: scaffold, 23,391-word school-safe list, engine with 51 unit tests, store, all five screens, settings drawer, clue checker, shortcuts overlay, classes and rosters, swap, career card, undo, class board, quick game, projector window.
+- Park Tudor varsity scoreboard design, with a separate design critique pass.
+- Phase 9: GitHub Pages workflow (manual trigger) and README teacher guide. Pages is not enabled yet because the game runs on localhost for now.
 
-## In progress
+## Acceptance checklist (PRD section 10), run by a QA agent in a real browser
 
-- Screens: Setup and classes, Team up, Live, Leaderboard, Podium, settings drawer, clue checker, shortcuts overlay.
-- Expanded word list.
-- Review pass and acceptance checklist.
+| Item | Result |
+|---|---|
+| First open, Start twice, playable Live screen | Pass |
+| Word readable on a 1080p projector (324 px word, 295 px timer) | Pass |
+| Timer within 50 ms over 20 s | Fixed: time up was 70 to 96 ms late; now fires on a timeout at the exact deadline and records the deadline |
+| Enter, S, Space, N, Esc, and no firing in text fields | Fixed: Esc used to close a dialog also ended the turn |
+| Refresh mid-turn keeps word and time | Pass |
+| No repeats; small-pool warning | Fixed: warning now shows when fewer than 10 words remain, including tiny custom lists |
+| Filters alone and combined | Pass |
+| Guesser rotation cycles everyone first | Pass |
+| Leaderboard order points, correct, fewest skips | Pass |
+| Score edit updates leaderboard and podium | Pass |
+| Five clue rules tested with reasons | Pass, plus doubled-consonant stems ("running" and "run") and 3-letter parts ("ear" in "bear") |
+| Zero TypeScript and console errors | Pass |
+| Deployed URL offline | Not run: the app is not deployed yet |
+
+Other QA fixes: Enter on the podium no longer wipes results while a teacher is still pressing Enter, a turn keeps the length it started with, undo no longer reaches into a turn that ran out of time, and podium copy.
+
+## Next
+
+- Enable GitHub Pages and run the deploy workflow when the class wants a public link.
