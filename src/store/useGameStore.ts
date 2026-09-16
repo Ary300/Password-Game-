@@ -65,6 +65,7 @@ export type GameStore = {
   addStudents: (theClassId: string, theNamesText: string) => void
   removeStudent: (theClassId: string, theStudentId: string) => void
   toggleAbsent: (theClassId: string, theStudentId: string) => void
+  setAllPresent: (theClassId: string) => void
   setActiveClass: (theClassId: string | null) => void
   splitClassIntoTeams: (theClassId: string, num: number) => void
 
@@ -126,7 +127,7 @@ function drawWord(theSettings: Settings, theGame: GameState): { word: WordEntry 
   if (thePool.length === 0) {
     // Every word is used; starting the list over beats a dead game in front of the class.
     theUsed = []
-    thePool = buildPool(theList, filtersFromSettings(theSettings), []).pool
+    thePool = buildPool(theList, theResult.filters, []).pool
     theWarning.push('word list restarted')
   }
   const theWord = pickWord(thePool, Math.random)
@@ -173,6 +174,21 @@ function pushUndo(theStack: UndoEntry[], theLabel: string, theGame: GameState, t
     return theNext.slice(theNext.length - UNDO_LIMIT)
   }
   return theNext
+}
+
+export function teamsUseClass(theTeams: Team[], theClass: ClassRoom): boolean {
+  const theIds: string[] = []
+  for (let n = 0; n < theClass.students.length; n++) {
+    theIds.push(theClass.students[n].id)
+  }
+  for (let n = 0; n < theTeams.length; n++) {
+    for (let i = 0; i < theTeams[n].players.length; i++) {
+      if (theIds.indexOf(theTeams[n].players[i].id) !== -1) {
+        return true
+      }
+    }
+  }
+  return false
 }
 
 function teamsFromCount(theTeams: Team[], num: number): Team[] {
@@ -399,6 +415,17 @@ export const useGameStore = create<GameStore>()(
           }),
         })
       },
+      setAllPresent: (theClassId) => {
+        set({
+          classes: replaceClass(get().classes, theClassId, (theClass) => {
+            const theStudents: Student[] = []
+            for (let n = 0; n < theClass.students.length; n++) {
+              theStudents.push({ ...theClass.students[n], absent: false })
+            }
+            return { ...theClass, students: theStudents }
+          }),
+        })
+      },
       setActiveClass: (theClassId) => set({ activeClassId: theClassId }),
       splitClassIntoTeams: (theClassId, num) => {
         const theState = get()
@@ -434,12 +461,13 @@ export const useGameStore = create<GameStore>()(
       },
       quickGame: () => {
         const theState = get()
-        if (theState.lastTeams.length >= MIN_TEAMS) {
+        // Teams on screen are whatever the teacher last edited or played with, so start with those.
+        if (theState.teams.length >= MIN_TEAMS) {
           let theMode: 'quick' | 'class' = 'quick'
-          if (theState.activeClassId !== null && findClass(theState.classes, theState.activeClassId) !== null) {
+          const theClass = findClass(theState.classes, theState.activeClassId)
+          if (theClass !== null && teamsUseClass(theState.teams, theClass)) {
             theMode = 'class'
           }
-          set({ teams: theState.lastTeams })
           get().startGame(theMode)
           return
         }
@@ -461,6 +489,15 @@ export const useGameStore = create<GameStore>()(
         }
         const theDraw = drawWord(theState.settings, theGame)
         if (theDraw.word === null) {
+          // Holding the hand-off stops the driver from retrying every tick while the teacher fixes the filters.
+          set({
+            game: {
+              ...theGame,
+              handoffEndsAt: null,
+              handoffHeld: true,
+              poolWarning: ['no words match these settings, open Settings to loosen them'],
+            },
+          })
           return
         }
         const theAbsent = absentIds(findClass(theState.classes, theGame.classId))
@@ -527,7 +564,7 @@ export const useGameStore = create<GameStore>()(
                 history: theHistory,
                 usedWords: theDraw.usedWords,
                 poolWarning: theDraw.warning,
-                turn: { ...theTurn, word: theDraw.word, wordShownAt: theShownAt },
+                turn: { ...theTurn, word: theDraw.word, wordShownAt: theShownAt, swapOpen: false },
               },
               undoStack: theUndo,
             })
@@ -535,7 +572,7 @@ export const useGameStore = create<GameStore>()(
           }
         }
         set({
-          game: { ...theGame, history: theHistory, turn: { ...theTurn, end: { outcome: 'correct', at: theNow, word: theTurn.word.word } } },
+          game: { ...theGame, history: theHistory, turn: { ...theTurn, swapOpen: false, pausedAt: null, end: { outcome: 'correct', at: theNow, word: theTurn.word.word } } },
           undoStack: theUndo,
         })
       },
@@ -564,7 +601,7 @@ export const useGameStore = create<GameStore>()(
             history: theGame.history.concat([theRow]),
             usedWords: theDraw.usedWords,
             poolWarning: theDraw.warning,
-            turn: { ...theTurn, word: theDraw.word, wordShownAt: theShownAt, skipsUsed: theTurn.skipsUsed + 1 },
+            turn: { ...theTurn, word: theDraw.word, wordShownAt: theShownAt, skipsUsed: theTurn.skipsUsed + 1, swapOpen: false },
           },
           undoStack: pushUndo(theState.undoStack, 'Skip: ' + theTurn.word.word, theGame, theState.teams),
         })
@@ -671,7 +708,10 @@ export const useGameStore = create<GameStore>()(
         }
         const theUndo = pushUndo(theState.undoStack, 'Skip team', theState.game, theState.teams)
         get().nextTeam(theNow)
-        set({ undoStack: theUndo })
+        // Ending the game clears undo on purpose; restoring it here would let Undo reopen a finished game.
+        if (get().game.phase !== 'podium') {
+          set({ undoStack: theUndo })
+        }
       },
       holdHandoff: (theHeld, theNow) => {
         const theState = get()
@@ -726,14 +766,19 @@ export const useGameStore = create<GameStore>()(
         if (theTurn.guesser.length > 0) {
           theSwapped = theSwapped.concat([theTurn.guesser])
         }
-        const theLog: TurnStart[] = []
+        // Both players keep credit for guessing this turn, so rotation stays fair to the one swapped out.
+        let theAlreadyLogged = false
         for (let n = 0; n < theGame.turnsLog.length; n++) {
           const theEntry = theGame.turnsLog[n]
-          if (theEntry.turnId === theTurn.turnId) {
-            theLog.push({ ...theEntry, guesserId: thePlayerId })
-          } else {
-            theLog.push(theEntry)
+          if (theEntry.turnId === theTurn.turnId && theEntry.guesserId === thePlayerId) {
+            theAlreadyLogged = true
           }
+        }
+        let theLog: TurnStart[] = theGame.turnsLog
+        if (!theAlreadyLogged) {
+          theLog = theGame.turnsLog.concat([
+            { turnId: theTurn.turnId, round: theGame.round, teamId: theTurn.teamId, guesserId: thePlayerId, at: theNow },
+          ])
         }
         set({
           game: {

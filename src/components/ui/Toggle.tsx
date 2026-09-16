@@ -24,9 +24,9 @@ export default function Toggle({ label, description, checked, onChange }: Toggle
         id={theId}
         checked={checked}
         onCheckedChange={onChange}
-        className="relative h-7 w-12 shrink-0 cursor-pointer rounded-full border border-line bg-surface-3 transition data-[state=checked]:border-crimson data-[state=checked]:bg-crimson"
+        className="relative h-8 w-14 shrink-0 cursor-pointer bg-surface-3 transition-colors data-[state=checked]:bg-crimson"
       >
-        <Switch.Thumb className="block h-5 w-5 translate-x-1 rounded-full bg-text shadow transition data-[state=checked]:translate-x-6 data-[state=checked]:bg-white" />
+        <Switch.Thumb className="block h-6 w-6 translate-x-1 bg-faint transition data-[state=checked]:translate-x-7 data-[state=checked]:bg-white" />
       </Switch.Root>
     </div>
   )

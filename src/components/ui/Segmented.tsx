@@ -20,7 +20,7 @@ export default function Segmented({ label, value, options, onChange }: Segmented
       <ToggleGroup.Item
         key={theOption.value}
         value={theOption.value}
-        className="h-9 flex-1 rounded-lg px-3 text-sm font-semibold text-muted transition hover:text-text data-[state=on]:bg-crimson data-[state=on]:text-white"
+        className="h-10 flex-1 px-3 text-sm font-bold text-muted transition-colors hover:bg-surface-3 hover:text-text data-[state=on]:bg-crimson data-[state=on]:text-white"
       >
         {theOption.label}
       </ToggleGroup.Item>,
@@ -36,7 +36,7 @@ export default function Segmented({ label, value, options, onChange }: Segmented
         }
       }}
       aria-label={label}
-      className="flex w-full gap-1 rounded-xl border border-line bg-surface-2 p-1"
+      className="flex w-full gap-0.5 bg-surface-2"
     >
       {theItems}
     </ToggleGroup.Root>

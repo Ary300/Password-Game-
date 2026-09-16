@@ -63,11 +63,18 @@ export function gameTotals(theGame: GameState): ClassTotals {
       theCorrect = theCorrect + 1
     }
   }
+  // A swap adds a second log entry for the same turn, so count distinct turns.
+  const theTurnIds: string[] = []
+  for (let n = 0; n < theGame.turnsLog.length; n++) {
+    if (theTurnIds.indexOf(theGame.turnsLog[n].turnId) === -1) {
+      theTurnIds.push(theGame.turnsLog[n].turnId)
+    }
+  }
   let theGames = 0
-  if (theGame.turnsLog.length > 0) {
+  if (theTurnIds.length > 0) {
     theGames = 1
   }
-  return { games: theGames, turns: theGame.turnsLog.length, correct: theCorrect }
+  return { games: theGames, turns: theTurnIds.length, correct: theCorrect }
 }
 
 export function commitGameToClass(theClass: ClassRoom, theGame: GameState): ClassRoom {

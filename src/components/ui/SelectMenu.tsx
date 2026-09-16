@@ -30,7 +30,7 @@ export default function SelectMenu({ label, value, options, onChange, placeholde
       <Select.Item
         key={theOption.value}
         value={theOption.value}
-        className="relative flex cursor-pointer items-center rounded-lg py-2.5 pr-3 pl-9 text-lg outline-none select-none data-[highlighted]:bg-crimson data-[highlighted]:text-white"
+        className="relative flex cursor-pointer items-center py-2.5 pr-3 pl-9 text-lg outline-none select-none data-[highlighted]:bg-crimson data-[highlighted]:text-white"
       >
         <Select.ItemIndicator className="absolute left-2.5">
           <Check size={18} />
@@ -48,7 +48,7 @@ export default function SelectMenu({ label, value, options, onChange, placeholde
     <Select.Root value={value} onValueChange={onChange} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
       <Select.Trigger
         aria-label={label}
-        className={theTrigger + ' inline-flex w-full items-center justify-between gap-2 rounded-xl border border-line bg-surface-2 px-4 font-semibold text-text hover:bg-surface-3'}
+        className={theTrigger + ' inline-flex w-full items-center justify-between gap-2 border-b-4 border-surface-3 bg-surface-2 px-4 font-bold text-text hover:bg-surface-3'}
       >
         <Select.Value placeholder={placeholder} />
         <Select.Icon>
@@ -56,7 +56,7 @@ export default function SelectMenu({ label, value, options, onChange, placeholde
         </Select.Icon>
       </Select.Trigger>
       <Select.Portal>
-        <Select.Content position="popper" sideOffset={6} className="z-[60] max-h-[60vh] min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-xl border border-line bg-surface p-1 shadow-2xl">
+        <Select.Content position="popper" sideOffset={6} className="z-[60] max-h-[60vh] min-w-[var(--radix-select-trigger-width)] overflow-hidden border-t-4 border-crimson bg-surface-2 p-1">
           <Select.Viewport>{theItems}</Select.Viewport>
         </Select.Content>
       </Select.Portal>

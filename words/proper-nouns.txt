@@ -1,0 +1,11 @@
+# Proper nouns that slip past the automatic WordNet and name-list checks,
+# usually because WordNet also lists an obscure lowercase sense ("john",
+# "google"). One word per line, lowercase. Lines starting with # are comments.
+#
+# Brands and companies
+google
+yahoo
+xerox
+kleenex
+coke
+pepsi

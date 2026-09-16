@@ -1,32 +1,44 @@
-# React + TypeScript + Vite
+# Password, Park Tudor edition
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A classroom word-guessing game for Mr. Ritz's classes at Park Tudor School. It replaces three browser tabs (a timer, a random word generator, and a leaderboard) with one screen built for the projector.
 
-Currently, two official plugins are available:
+## The 30-second teacher guide
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+1. Open the app and press **Start game**. Two teams, a 20-second clock, and every word in the list are ready with no setup.
+2. The guesser stands with their back to the screen. Teammates shout one-word clues.
+3. Press **Enter** when they get it. The team gets a new word and keeps going until time runs out.
+4. When the buzzer sounds, the next team is up automatically after a short hand-off countdown. Press **H** to hold it or **Space** to start now.
+5. After the last round the podium shows the winners.
 
-## React Compiler
+Stuck on a disputed clue? Press **C** and type it in. Forgot a key? Press **?**.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Key | Team up | Live |
+|---|---|---|
+| Space | Start turn | Pause or resume |
+| Enter | Start turn | Correct |
+| S | | Skip word |
+| Esc | | End turn |
+| G | Pick guesser | Swap guesser |
+| H | Hold the hand-off | |
+| U | Undo | Undo |
+| L | Leaderboard | Leaderboard |
 
-## Expanding the Oxlint configuration
+## Classes
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+On the Setup screen, open **Classes**, name the class, and paste student names one per line. Mark anyone absent today, split the room into teams with one button, and start a class game. Lifetime stats and the class board fill in as you play.
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+## Projector window
+
+The monitor icon in the top bar opens a second window that shows only the game. Drag it to the projector and keep controls on the laptop.
+
+## Running it
+
+```bash
+npm install
+npm run dev          # http://localhost:5173
+npm test             # engine unit tests
+npm run build        # static files in dist/, works from a USB stick or any static host
+npm run build-words  # rebuild src/data/words.json from words/source.txt, CMUdict, and a frequency list
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+To publish on GitHub Pages, enable Pages with GitHub Actions as the source in the repository settings, then run the "Deploy to GitHub Pages" workflow.

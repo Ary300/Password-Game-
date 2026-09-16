@@ -34,9 +34,9 @@ export default function TopBar() {
         className={({ isActive }) => {
           let theState = 'text-muted hover:text-text'
           if (isActive) {
-            theState = 'bg-surface-3 text-text'
+            theState = 'text-text shadow-[inset_0_-4px_0_0_var(--crimson)]'
           }
-          return 'rounded-lg px-3 py-1.5 text-sm font-semibold transition ' + theState
+          return 'relative flex h-14 items-center px-3 text-sm font-bold transition-colors ' + theState
         }}
       >
         {theLink.label}
@@ -50,7 +50,7 @@ export default function TopBar() {
     if (theSettings.roundsPerGame > 0) {
       theOf = ' of ' + String(theSettings.roundsPerGame)
     }
-    theRound = <span className="tabular hidden rounded-lg bg-surface-2 px-3 py-1.5 text-sm font-semibold text-muted md:inline">Round {theGame.round}{theOf}</span>
+    theRound = <span className="tabular mr-2 hidden bg-gold px-3 py-1 text-sm font-black text-gold-ink wdth-condensed md:inline">Round {theGame.round}{theOf}</span>
   }
 
   let theSoundIcon = <VolumeX size={20} />
@@ -65,12 +65,12 @@ export default function TopBar() {
     theThemeIcon = <Moon size={20} />
     theNextTheme = 'dark'
   }
-  const theIconButton = 'inline-flex h-10 w-10 items-center justify-center rounded-lg text-muted transition hover:bg-surface-2 hover:text-text'
+  const theIconButton = 'inline-flex h-10 w-10 items-center justify-center text-muted transition-colors hover:bg-surface-2 hover:text-text'
 
   return (
-    <header className="flex h-14 shrink-0 items-center gap-3 border-b border-line bg-bg px-4">
+    <header className="flex h-14 shrink-0 items-center gap-3 border-b-2 border-surface-3 bg-bg px-4">
       <BrandMark />
-      <nav className="ml-2 hidden items-center gap-1 lg:flex" aria-label="Screens">
+      <nav className="ml-4 hidden h-full items-stretch lg:flex" aria-label="Screens">
         {theItems}
       </nav>
       <div className="ml-auto flex items-center gap-1">

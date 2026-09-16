@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@fontsource-variable/archivo/wdth.css";
+@import "@fontsource-variable/big-shoulders-display/wght.css";
 @import "@fontsource/libre-baskerville/400.css";
 @import "@fontsource/libre-baskerville/400-italic.css";
 @import "@fontsource/libre-baskerville/700.css";
@@ -7,14 +8,14 @@
 /* Park Tudor palette. Dark "panther night" is the default because it projects best. */
 :root,
 [data-theme="dark"] {
-  --bg: #140606;
-  --surface: #1f0c0b;
-  --surface-2: #2b1311;
-  --surface-3: #3a1b18;
-  --line: #4a2622;
-  --text: #fbf3ea;
-  --muted: #c9aca5;
-  --faint: #8d6d67;
+  --bg: #0e0d0d;
+  --surface: #181616;
+  --surface-2: #221f1f;
+  --surface-3: #2f2a2a;
+  --line: #3d3636;
+  --text: #ffffff;
+  --muted: #b9b0ae;
+  --faint: #7a716f;
   --crimson: #c63527;
   --crimson-deep: #95271a;
   --crimson-text: #ff6a57;
@@ -23,7 +24,7 @@
   --good: #3ddc97;
   --warn: #ffa630;
   --bad: #ff4b3e;
-  --ring-track: #3a1b18;
+  --ring-track: #2f2a2a;
   color-scheme: dark;
 }
 
@@ -67,6 +68,7 @@
   --color-bad: var(--bad);
   --font-sans: "Archivo Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-serif: "Libre Baskerville", Georgia, serif;
+  --font-display: "Big Shoulders Display Variable", "Archivo Variable", sans-serif;
 }
 
 html,
@@ -100,8 +102,39 @@ body {
 
 :focus-visible {
   outline: 3px solid var(--gold);
-  outline-offset: 3px;
-  border-radius: 10px;
+  outline-offset: 2px;
+}
+
+/* The varsity cut: one slanted edge, used only on the hero block and the live team banner. */
+.varsity-cut {
+  clip-path: polygon(0 0, 100% 0, calc(100% - 48px) 100%, 0 100%);
+}
+.varsity-cut-left {
+  clip-path: polygon(48px 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  line-height: 0.86;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Jersey mesh: a fine dot grid over crimson fields so large color blocks feel printed, not flat vector fills. */
+.mesh {
+  background-image: radial-gradient(rgb(0 0 0 / 0.18) 1.2px, transparent 1.3px);
+  background-size: 7px 7px;
+}
+.stripes {
+  background-image: repeating-linear-gradient(-58deg, transparent 0 14px, rgb(255 255 255 / 0.06) 14px 28px);
 }
 
 ::selection {

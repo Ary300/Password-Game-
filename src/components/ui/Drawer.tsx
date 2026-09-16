@@ -19,11 +19,11 @@ export default function Drawer({ open, onOpenChange, title, children, footer }: 
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-40 bg-black/50" />
-        <Dialog.Content className="fixed top-0 right-0 z-50 flex h-full w-full max-w-[520px] flex-col border-l border-line bg-surface shadow-2xl">
+        <Dialog.Content className="fixed top-0 right-0 z-50 flex h-full w-full max-w-[520px] flex-col border-l-8 border-crimson bg-surface">
           <div className="flex items-center justify-between border-b border-line px-5 py-4">
-            <Dialog.Title className="text-2xl font-extrabold tracking-tight">{title}</Dialog.Title>
+            <Dialog.Title className="display text-4xl">{title}</Dialog.Title>
             <Dialog.Description className="sr-only">{title}</Dialog.Description>
-            <Dialog.Close className="rounded-lg p-2 text-muted hover:bg-surface-2 hover:text-text" aria-label="Close">
+            <Dialog.Close className="p-2 text-muted hover:bg-surface-2 hover:text-text" aria-label="Close">
               <X size={22} />
             </Dialog.Close>
           </div>
