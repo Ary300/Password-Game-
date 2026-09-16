@@ -28,8 +28,8 @@ export default function LiveControls({ paused, counting, skipsLeft, onCorrect, o
     thePauseVariant = 'gold'
   }
   return (
-    <div className="mx-auto grid w-full max-w-[640px] grid-cols-3 gap-1.5" role="group" aria-label="Turn controls">
-      <Button variant="good" size="xl" hotkey="Enter" className="col-span-3" disabled={counting} onClick={blurThen(onCorrect)}>
+    <div className="mx-auto grid w-full max-w-[760px] grid-cols-2 gap-1.5 2xl:grid-cols-4" role="group" aria-label="Turn controls">
+      <Button variant="good" size="xl" hotkey="Enter" className="col-span-2 2xl:col-span-4" disabled={counting} onClick={blurThen(onCorrect)}>
         Correct
       </Button>
       <Button size="lg" hotkey="S" disabled={counting || skipsLeft <= 0} onClick={blurThen(onSkip)}>
@@ -38,11 +38,11 @@ export default function LiveControls({ paused, counting, skipsLeft, onCorrect, o
       <Button size="lg" variant={thePauseVariant} hotkey="Space" onClick={blurThen(onPause)}>
         {thePauseLabel}
       </Button>
+      <Button size="lg" hotkey="U" onClick={blurThen(onUndo)}>
+        Undo
+      </Button>
       <Button size="lg" variant="danger" hotkey="Esc" onClick={blurThen(onEnd)}>
         End turn
-      </Button>
-      <Button size="sm" variant="ghost" hotkey="U" className="col-span-3" onClick={blurThen(onUndo)}>
-        Undo
       </Button>
     </div>
   )

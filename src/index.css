@@ -15,7 +15,7 @@
   --line: #3d3636;
   --text: #ffffff;
   --muted: #b9b0ae;
-  --faint: #7a716f;
+  --faint: #958b88;
   --crimson: #c63527;
   --crimson-deep: #95271a;
   --crimson-text: #ff6a57;
@@ -36,7 +36,7 @@
   --line: #dccbb9;
   --text: #1a0606;
   --muted: #6b4f49;
-  --faint: #9c817a;
+  --faint: #7f655e;
   --crimson: #c63527;
   --crimson-deep: #95271a;
   --crimson-text: #b02a1c;
@@ -113,13 +113,32 @@ body {
   clip-path: polygon(48px 0, 100% 0, 100% 100%, 0 100%);
 }
 
-.label {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: var(--muted);
+/* Components sit in a layer so size and color utilities on the same element can override them. */
+@layer components {
+  .label {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    color: var(--muted);
+  }
+
+  /* One key cap style for every shortcut hint: a flat outlined tag in the current text color. */
+  .keycap {
+    display: inline-flex;
+    min-width: 1.9em;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid color-mix(in srgb, currentColor 45%, transparent);
+    font-family: var(--font-sans);
+    font-stretch: 100%;
+    font-variation-settings: "wdth" 100;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0;
+  }
 }
 
+/* Unlayered on purpose: the tight scoreboard leading must beat the line-height that named text sizes carry. */
 .display {
   font-family: var(--font-display);
   font-weight: 900;
@@ -164,4 +183,9 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Gold is a fill color first; as text on the light theme it needs a darker shade to pass contrast. */
+[data-theme="light"] .text-gold {
+  color: #8a5a00;
 }

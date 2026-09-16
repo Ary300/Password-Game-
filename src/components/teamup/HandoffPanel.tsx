@@ -37,9 +37,9 @@ export default function HandoffPanel({ endsAt, held, handoffSeconds, projector, 
     }
     theHeadline = 'Starts in'
     theClock = (
-      <div className="flex items-end gap-4">
-        <span className="display tabular pt-[0.08em] text-[clamp(80px,13vh,170px)] text-gold">{Math.ceil(theMsLeft / 1000)}</span>
-        <div className="mb-3 h-3 w-[clamp(100px,12vw,320px)] bg-surface-3">
+      <div className="flex items-end gap-5">
+        <span className="display tabular pt-[0.08em] text-[clamp(96px,15vh,190px)] text-gold">{Math.ceil(theMsLeft / 1000)}</span>
+        <div className="mb-4 h-4 w-[clamp(100px,12vw,320px)] bg-surface-3">
           <div className="h-full origin-left bg-gold" style={{ transform: 'scaleX(' + String(theFraction) + ')' }} />
         </div>
       </div>
@@ -66,12 +66,12 @@ export default function HandoffPanel({ endsAt, held, handoffSeconds, projector, 
       theStartLabel = 'Start now'
     }
     theActions = (
-      <div className="flex flex-wrap items-center gap-1.5">
+      <div className="flex flex-wrap items-end gap-1.5">
         <Button variant="primary" size="xl" hotkey="Space" onClick={blurThen(onStart)}>
           {theStartLabel}
         </Button>
         {theHoldButton}
-        <Button variant="ghost" size="lg" hotkey="X" onClick={blurThen(onSkipTeam)}>
+        <Button size="lg" hotkey="X" onClick={blurThen(onSkipTeam)}>
           Skip team
         </Button>
       </div>
@@ -79,7 +79,7 @@ export default function HandoffPanel({ endsAt, held, handoffSeconds, projector, 
   }
   let theStatus = null
   if (theHeadline.length > 0) {
-    let theHeadlineClass = 'label text-lg'
+    let theHeadlineClass = 'label text-xl'
     if (projector && theClock === null) {
       theHeadlineClass = 'display text-[clamp(48px,7vh,84px)]'
     }

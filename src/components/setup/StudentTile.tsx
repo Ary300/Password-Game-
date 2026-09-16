@@ -19,6 +19,12 @@ export default function StudentTile({ student, onToggleAbsent, onRemove }: Stude
     theStatusStyle = 'text-faint'
   }
 
+  // Present is the normal case, so only an absence earns a word; the square already marks who is here.
+  let theStatusTag = null
+  if (student.absent) {
+    theStatusTag = <span className={'shrink-0 text-sm font-bold ' + theStatusStyle}>{theStatus}</span>
+  }
+
   let theCareer = 'No turns yet'
   if (student.career.turns > 0) {
     theCareer = String(student.career.correct) + ' correct in ' + String(student.career.turns) + ' turns'
@@ -36,9 +42,9 @@ export default function StudentTile({ student, onToggleAbsent, onRemove }: Stude
         <span aria-hidden="true" className={'h-3 w-3 shrink-0 ' + theMark} />
         <span className="min-w-0 flex-1">
           <span className={theNameStyle}>{student.name}</span>
-          <span className="tabular block truncate text-xs text-faint">{theCareer}</span>
+          <span className="tabular block truncate text-sm text-muted">{theCareer}</span>
         </span>
-        <span className={'shrink-0 text-sm font-bold ' + theStatusStyle}>{theStatus}</span>
+        {theStatusTag}
       </button>
       <button
         type="button"

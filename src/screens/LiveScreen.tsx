@@ -169,12 +169,12 @@ export default function LiveScreen({ mode }: { mode: ScreenMode }) {
   return (
     <MotionConfig reducedMotion="user">
       <section className="relative flex h-full flex-col overflow-hidden bg-bg" style={{ ['--timer-ring' as string]: 'clamp(280px, 38vh, 420px)' }} aria-label="Live turn">
-        <StandingsStrip standings={theStandings} currentTeamId={theTeam.id} round={theGame.round} roundsPerGame={theSettings.roundsPerGame} />
+        <StandingsStrip standings={theStandings} currentTeamId={theTeam.id} round={theGame.round} roundsPerGame={theSettings.roundsPerGame} showRound={!theIsControl} />
         <div className="relative flex min-h-0 flex-1 flex-col items-center">
           <div className="flex h-[clamp(56px,9vh,96px)] shrink-0 items-center justify-center">{theStatus}</div>
           <div className="min-h-0 w-full flex-1 px-6 pb-[2vh]">{theStage}</div>
         </div>
-        <div className="grid shrink-0 grid-cols-[auto_minmax(0,1fr)_auto] items-stretch gap-6 bg-surface-3 py-4 pl-6">
+        <div className="grid shrink-0 grid-cols-[auto_minmax(0,1fr)_auto] items-stretch gap-8 border-t-8 bg-surface py-5 pl-8" style={{ borderColor: theTeam.color }}>
           <TimerRing msLeft={theMsLeft} totalMs={theTotalMs} paused={thePaused} />
           <div className="flex items-center justify-center">{theCenter}</div>
           <LiveTeamPanel

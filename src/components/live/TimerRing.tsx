@@ -53,7 +53,7 @@ export default function TimerRing({ msLeft, totalMs, paused }: TimerRingProps) {
         <span className="display tabular" style={{ fontSize: 'calc(var(--timer-ring) * ' + String(theScale) + ')', color: theNumberColor }}>
           {theText}
         </span>
-        <span className="label mt-1">{theCaption}</span>
+        <span className="label mt-2 text-lg">{theCaption}</span>
       </div>
     </div>
   )

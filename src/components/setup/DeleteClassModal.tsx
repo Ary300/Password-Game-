@@ -1,4 +1,3 @@
-import { Trash2 } from 'lucide-react'
 import type { ClassRoom } from '../../engine/types'
 import Button from '../ui/Button'
 import Modal from '../ui/Modal'
@@ -23,7 +22,7 @@ export default function DeleteClassModal({ open, onOpenChange, classRoom, onConf
         <Button variant="secondary" size="md" onClick={() => onOpenChange(false)}>
           Keep class
         </Button>
-        <Button variant="primary" size="md" icon={<Trash2 size={18} aria-hidden="true" />} onClick={onConfirm}>
+        <Button variant="primary" size="md" onClick={onConfirm}>
           Delete class
         </Button>
       </div>

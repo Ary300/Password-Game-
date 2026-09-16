@@ -15,7 +15,7 @@ export default function StillToGuess({ players, teamColor }: { players: Player[]
   }
   return (
     <div className="flex min-w-0 items-center gap-3">
-      <span className="label w-28 shrink-0 text-base">Still to guess</span>
+      <span className="label w-36 shrink-0 text-lg">Still to guess</span>
       {theList}
     </div>
   )

@@ -15,7 +15,7 @@ export default function TeamBanner({ teamName, teamColor }: { teamName: string; 
           initial={{ opacity: 0, x: -60 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3, duration: 0.35, ease: [0.2, 0.8, 0.2, 1] }}
-          className="display truncate pt-[0.06em] text-[clamp(84px,17vh,240px)] text-gold-ink"
+          className="display truncate pt-[0.06em] text-[clamp(96px,20vh,280px)] text-gold-ink"
         >
           {teamName}
         </motion.h1>

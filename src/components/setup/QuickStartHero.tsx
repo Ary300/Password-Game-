@@ -38,7 +38,7 @@ export default function QuickStartHero() {
             className="flex h-28 w-full items-center justify-between gap-4 whitespace-nowrap border-b-8 border-[#1a0606] bg-white px-7 text-[#95271a] transition-colors select-none hover:bg-[#fff4d6] active:translate-y-1 active:border-b-4 2xl:h-52 2xl:px-10"
           >
             <span className="display text-6xl 2xl:text-8xl">Start game</span>
-            <kbd className="border-2 border-current px-2.5 py-1.5 font-sans text-base leading-none font-bold 2xl:text-2xl">Enter</kbd>
+            <kbd className="keycap px-2.5 py-1.5 text-lg 2xl:text-2xl">Enter</kbd>
           </button>
           <p className="mt-3 text-base text-white/90 xl:text-lg">
             <span className="font-bold text-white">Plays with </span>

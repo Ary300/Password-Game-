@@ -60,7 +60,7 @@ export default function QuickTeamsPanel({ onOpenClasses }: { onOpenClasses: () =
     <div className="flex h-full min-h-0 flex-col">
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pb-4">
         <div className="flex items-center gap-3">
-          <span className="label text-base">Teams</span>
+          <span className="label text-lg">Teams</span>
           <Stepper label="team count" value={theTeams.length} min={MIN_TEAMS} max={MAX_TEAMS} onChange={setTeamCount} />
         </div>
         <Button variant="ghost" size="md" className="ml-auto" onClick={loadLastTeams} disabled={theLastTeams.length < MIN_TEAMS} title={theLoadHint}>
@@ -69,8 +69,7 @@ export default function QuickTeamsPanel({ onOpenClasses }: { onOpenClasses: () =
       </div>
       {theClassNote}
       <ol className="scroll-area flex min-h-0 flex-1 flex-col gap-1">{theRows}</ol>
-      <div className="mt-4 flex items-center justify-between gap-4 border-t-4 border-surface-2 pt-4">
-        <p className="label">Names are optional.</p>
+      <div className="mt-4 flex items-center justify-end gap-4 border-t-4 border-surface-2 pt-4">
         <Button variant="primary" size="lg" className="shrink-0" onClick={handleStart}>
           Start with these teams
         </Button>

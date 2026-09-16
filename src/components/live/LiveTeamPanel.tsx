@@ -16,7 +16,7 @@ export default function LiveTeamPanel({ teamName, teamColor, totalPoints, guesse
   if (showSwap) {
     theSwap = (
       <Button
-        size="sm"
+        size="md"
         hotkey="G"
         onClick={(theEvent: MouseEvent<HTMLButtonElement>) => {
           theEvent.currentTarget.blur()
@@ -30,23 +30,29 @@ export default function LiveTeamPanel({ teamName, teamColor, totalPoints, guesse
   let theGuesser = null
   if (guesser.length > 0 || theSwap !== null) {
     theGuesser = (
-      <div className="flex min-w-0 items-center justify-end gap-3">
-        <span className="truncate text-[clamp(20px,2.8vh,30px)] font-extrabold">{guesser}</span>
-        {theSwap}
+      <div className="flex min-w-0 flex-col items-start gap-1">
+        <span className="label text-lg">Guessing</span>
+        <div className="flex min-w-0 items-center gap-4">
+          <span className="display min-w-0 truncate pt-[0.06em] text-[clamp(40px,6vh,68px)]">{guesser}</span>
+          {theSwap}
+        </div>
       </div>
     )
   }
   return (
-    <div className="flex w-[clamp(360px,32vw,600px)] min-w-0 flex-col">
-      <div className="varsity-cut-left mesh flex items-center justify-end py-[1.2vh] pr-6 pl-16" style={{ backgroundColor: teamColor }}>
-        <span className="display min-w-0 truncate pt-1 text-[clamp(40px,6.4vh,76px)] text-gold-ink">{teamName}</span>
+    <div className="flex w-[clamp(380px,34vw,640px)] min-w-0 flex-col">
+      <div className="varsity-cut-left mesh flex items-center justify-end py-[1.2vh] pr-8 pl-16" style={{ backgroundColor: teamColor }}>
+        <span className="display min-w-0 truncate pt-1 text-[clamp(44px,7vh,84px)] text-gold-ink">{teamName}</span>
       </div>
-      <div className="flex min-h-0 flex-1 items-center justify-end gap-6 pr-6">
-        <div className="flex min-w-0 flex-col items-end gap-3">
+      <div className="flex min-h-0 flex-1 items-center justify-between gap-6 pt-4 pr-8 pl-16">
+        <div className="flex min-w-0 flex-col items-start gap-3 pb-2">
           {theGuesser}
           {stats}
         </div>
-        <span className="display tabular pt-[0.08em] text-[clamp(110px,18vh,210px)] text-gold">{totalPoints}</span>
+        <div className="flex shrink-0 flex-col items-end">
+          <span className="display tabular pt-[0.08em] text-[clamp(110px,18vh,210px)] text-gold">{totalPoints}</span>
+          <span className="label text-lg">Total</span>
+        </div>
       </div>
     </div>
   )

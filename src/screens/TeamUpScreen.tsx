@@ -60,10 +60,10 @@ export default function TeamUpScreen({ mode }: { mode: ScreenMode }) {
   const theGuesserId = resolveGuesserId(theTeam, theGame.turnsLog, theAbsentIds)
   const theGuesserName = playerName(theTeam, theGuesserId)
 
-  let theGuesserLine = <p className="text-[clamp(32px,6vh,80px)] leading-tight font-extrabold">Pick a guesser. Guesser faces away.</p>
+  let theGuesserLine = <p className="display pt-[0.06em] text-[clamp(48px,9vh,120px)]">Pick a guesser</p>
   if (theGuesserName.length > 0) {
     theGuesserLine = (
-      <p className="text-[clamp(32px,6vh,80px)] leading-tight font-extrabold">
+      <p className="display pt-[0.06em] text-[clamp(48px,9vh,120px)]">
         {theGuesserName} <span className="text-muted">is guessing</span>
       </p>
     )
@@ -85,7 +85,7 @@ export default function TeamUpScreen({ mode }: { mode: ScreenMode }) {
       )
     }
     theRoster = (
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         {thePicker}
         <StillToGuess players={playersYetToGuess(theTeam, theGame.turnsLog, theAbsentIds)} teamColor={theTeam.color} />
       </div>
@@ -101,20 +101,26 @@ export default function TeamUpScreen({ mode }: { mode: ScreenMode }) {
     )
   }
 
+  // The control window shows the round in the top bar; the projector has no top bar, so it keeps its own.
+  let theRoundLabel = null
+  if (!theIsControl) {
+    theRoundLabel = <RoundLabel round={theGame.round} roundsPerGame={theSettings.roundsPerGame} className="display text-[clamp(28px,4vh,44px)] text-gold" />
+  }
+
   return (
     <MotionConfig reducedMotion="user">
       <section
         className="grid h-full grid-cols-[minmax(0,1fr)_clamp(300px,27vw,480px)] gap-[clamp(20px,3vw,56px)] overflow-hidden bg-bg p-[clamp(20px,4vh,48px)]"
         aria-label="Team up"
       >
-        <div className="flex min-h-0 min-w-0 flex-col justify-between gap-[2vh]">
-          <div className="flex flex-col gap-[1.6vh]">
-            <RoundLabel round={theGame.round} roundsPerGame={theSettings.roundsPerGame} className="label text-lg" />
+        <div className="flex min-h-0 min-w-0 flex-col justify-between gap-[3vh]">
+          <div className="flex flex-col gap-[2.4vh]">
+            {theRoundLabel}
             <TeamBanner key={theTeam.id + '-' + String(theGame.turnsLog.length)} teamName={theTeam.name} teamColor={theTeam.color} />
             {theGuesserLine}
-            <div className="mt-[1vh]">{theRoster}</div>
+            {theRoster}
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3 border-t-4 border-surface-3 pt-[3vh]">
             <HandoffPanel
               endsAt={theGame.handoffEndsAt}
               held={theGame.handoffHeld}

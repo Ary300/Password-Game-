@@ -1,4 +1,3 @@
-import { Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { findClass, useGameStore } from '../../store/useGameStore'
 import Button from '../ui/Button'
@@ -73,7 +72,7 @@ export default function ClassesPanel() {
             maxLength={40}
             className="display h-14 min-w-0 flex-1 border-b-4 border-transparent bg-transparent text-4xl text-text [word-spacing:0.1em] xl:text-5xl 2xl:h-16 2xl:text-6xl hover:border-surface-3 focus:border-gold focus:outline-none"
           />
-          <Button variant="danger" size="sm" icon={<Trash2 size={16} aria-hidden="true" />} onClick={() => setTheDeleteOpen(true)}>
+          <Button variant="danger" size="sm" onClick={() => setTheDeleteOpen(true)}>
             Delete class
           </Button>
         </div>

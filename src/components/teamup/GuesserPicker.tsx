@@ -35,7 +35,7 @@ export default function GuesserPicker({ team, turnsLog, absentIds, value, openCo
   }
   return (
     <div className="flex min-w-0 items-center gap-3">
-      <span className="label w-28 shrink-0 text-base">Change guesser</span>
+      <span className="label w-36 shrink-0 text-lg">Change guesser</span>
       <div className="w-[min(320px,100%)]">
         <SelectMenu
           key={openCount}

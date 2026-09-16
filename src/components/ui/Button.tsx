@@ -20,6 +20,14 @@ const theVariants: Record<ButtonVariant, string> = {
   good: 'bg-good text-gold-ink hover:brightness-95 border-b-4 border-[#23a26c]',
 }
 
+// Key caps use fixed sizes per button size so every hint reads at the same weight across screens.
+const theKeySizes: Record<ButtonSize, string> = {
+  sm: 'text-xs px-1.5 py-0.5',
+  md: 'text-sm px-1.5 py-0.5',
+  lg: 'text-sm px-2 py-1',
+  xl: 'text-lg px-2.5 py-1',
+}
+
 const theSizes: Record<ButtonSize, string> = {
   sm: 'h-9 px-3 text-sm gap-2',
   md: 'h-11 px-4 text-base gap-2.5',
@@ -31,7 +39,7 @@ export default function Button({ variant = 'secondary', size = 'md', icon, hotke
   let theHotkey = null
   if (hotkey !== undefined) {
     theHotkey = (
-      <kbd className="ml-auto inline-flex min-w-[1.9em] items-center justify-center border-2 border-current/35 px-1.5 py-0.5 font-sans text-[0.45em] leading-none font-bold opacity-80" style={{ fontStretch: '100%' }}>
+      <kbd className={'keycap ml-auto ' + theKeySizes[size]}>
         {hotkey}
       </kbd>
     )
