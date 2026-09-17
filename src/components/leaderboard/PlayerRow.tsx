@@ -32,7 +32,7 @@ export default function PlayerRow({ stat, rank, striped }: PlayerRowProps) {
   return (
     <li className={'border-l-8 py-2 pr-5 pl-3 ' + theBand + ' ' + PLAYER_GRID} style={{ borderLeftColor: stat.teamColor }}>
       <span className={'display tabular text-center text-4xl ' + theRankTone}>{thePlace}</span>
-      <span className={'display truncate pb-0.5 text-4xl ' + theNameTone}>{stat.name}</span>
+      <span className={'display truncate pb-[0.2em] text-4xl ' + theNameTone}>{stat.name}</span>
       <span className="truncate text-base font-bold text-muted">{stat.teamName}</span>
       <span className="display tabular text-right text-4xl text-muted">{stat.turns}</span>
       <span className="display tabular text-right text-4xl">{stat.correct}</span>

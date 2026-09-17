@@ -4,6 +4,7 @@ import LiveEmptyState from '../components/live/LiveEmptyState'
 import RoundLabel from '../components/live/RoundLabel'
 import GuesserPicker from '../components/teamup/GuesserPicker'
 import HandoffPanel from '../components/teamup/HandoffPanel'
+import HowToPlayStrip from '../components/teamup/HowToPlayStrip'
 import StillToGuess from '../components/teamup/StillToGuess'
 import TeamBanner from '../components/teamup/TeamBanner'
 import TeamUpStandings from '../components/teamup/TeamUpStandings'
@@ -106,6 +107,11 @@ export default function TeamUpScreen({ mode }: { mode: ScreenMode }) {
     )
   }
 
+  let theHowTo = null
+  if (theGame.round === 1) {
+    theHowTo = <HowToPlayStrip projector={!theIsControl} compact={theHasPlayers} />
+  }
+
   // The control window shows the round in the top bar; the projector has no top bar, so it keeps its own.
   let theRoundLabel = null
   if (!theIsControl) {
@@ -124,6 +130,7 @@ export default function TeamUpScreen({ mode }: { mode: ScreenMode }) {
             <TeamBanner key={theTeam.id + '-' + String(theGame.turnsLog.length)} teamName={theTeam.name} teamColor={theTeam.color} />
             {theGuesserLine}
             {theRoster}
+            {theHowTo}
           </div>
           <div className="flex flex-col gap-3 border-t-4 border-surface-3 pt-[3vh]">
             <HandoffPanel

@@ -85,12 +85,16 @@ export default function RoundHistoryTab() {
       thePoints = thePoints + theRow.points
       theItems.push(<HistoryRow key={theRow.id} row={theRow} team={findTeam(theTeams, theRow.teamId)} onEdit={(theClicked) => setTheEditingId(theClicked.id)} />)
     }
+    let thePointWord = 'points'
+    if (thePoints === 1 || thePoints === -1) {
+      thePointWord = 'point'
+    }
     theSections.push(
       <section key={'round-' + String(theGroup.round) + '-' + String(n)} aria-label={'Round ' + String(theGroup.round)}>
         <header className="sticky top-0 z-10 flex items-end justify-between bg-surface-3 py-2 pr-4 pl-3">
           <h3 className="display text-4xl">Round {theGroup.round}</h3>
           <span className="label tabular">
-            {theCorrect} correct, {thePoints} points
+            {theCorrect} correct, {thePoints} {thePointWord}
           </span>
         </header>
         <ul>{theItems}</ul>

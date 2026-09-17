@@ -42,7 +42,7 @@
   --crimson-text: #b02a1c;
   --gold: #fed141;
   --gold-ink: #1a0606;
-  --good: #0f8a5f;
+  --good: #10915f;
   --warn: #c26a00;
   --bad: #d62d20;
   --ring-track: #e9dccd;
@@ -188,4 +188,9 @@ body {
 /* Gold is a fill color first; as text on the light theme it needs a darker shade to pass contrast. */
 [data-theme="light"] .text-gold {
   color: #8a5a00;
+}
+
+/* The light green is tuned so dark ink on a green fill passes; green text on paper gets a deeper shade. */
+[data-theme="light"] .text-good {
+  color: #0a6e4b;
 }

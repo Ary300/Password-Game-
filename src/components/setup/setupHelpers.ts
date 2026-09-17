@@ -78,7 +78,7 @@ function syllableLabel(theSettings: Settings): string {
 
 function difficultyLabel(theSettings: Settings): string {
   if (theSettings.difficulty === 'mixed') {
-    return 'Mixed difficulty'
+    return 'All difficulties'
   }
   return theSettings.difficulty.charAt(0).toUpperCase() + theSettings.difficulty.slice(1) + ' words'
 }

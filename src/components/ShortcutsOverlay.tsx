@@ -17,7 +17,7 @@ const theLeftColumn: ShortcutGroupData[] = [
     title: 'Team up',
     shortcuts: [
       { keys: ['Space', 'Enter', 'N'], action: 'Start turn' },
-      { keys: ['H'], action: 'Hold or resume' },
+      { keys: ['H'], action: 'Hold or restart the countdown' },
       { keys: ['X'], action: 'Skip team' },
       { keys: ['G'], action: 'Pick guesser' },
     ],
@@ -30,7 +30,7 @@ const theLeftColumn: ShortcutGroupData[] = [
       { keys: ['Space'], action: 'Pause or resume' },
       { keys: ['Esc'], action: 'End turn' },
       { keys: ['G'], action: 'Swap guesser' },
-      { keys: ['N'], action: 'Next team (manual hand-off)' },
+      { keys: ['N'], action: 'Next team, after the turn ends' },
       { keys: ['+', '-'], action: 'Add or take a point' },
     ],
   },
@@ -42,7 +42,7 @@ const theRightColumn: ShortcutGroupData[] = [
     shortcuts: [
       { keys: ['U'], action: 'Undo' },
       { keys: ['L'], action: 'Leaderboard, again to go back' },
-      { keys: ['C'], action: 'Clue checker' },
+      { keys: ['C'], action: 'Check a clue' },
       { keys: ['M'], action: 'Mute' },
       { keys: ['F'], action: 'Fullscreen' },
       { keys: ['?'], action: 'This list' },

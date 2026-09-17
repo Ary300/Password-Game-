@@ -31,28 +31,37 @@ function nudgeCurrentTeam(num: number) {
   }
 }
 
-function pointsLine(thePoints: number, theBonus: number): string {
-  let theSign = '+'
+// The banner hides the team panel, so the line names the team for a class reading the projector.
+function pointsLine(theTeamName: string, thePoints: number, theBonus: number): string {
+  let theVerb = ' scored '
   if (thePoints < 0) {
-    theSign = ''
+    theVerb = ' lost '
   }
   let theNoun = ' points this turn'
-  if (thePoints === 1) {
+  if (Math.abs(thePoints) === 1) {
     theNoun = ' point this turn'
   }
-  let theText = theSign + String(thePoints) + theNoun
+  let theText = theTeamName + theVerb + String(Math.abs(thePoints)) + theNoun
   if (theBonus > 0) {
     theText = theText + ', ' + String(theBonus) + ' from time bonus'
   }
   return theText
 }
 
+// One toast slot for undo: stacked toasts at laptop height cover the banner's Undo and Next team buttons.
+const UNDO_TOAST_ID = 'undo'
+
 function undoWithToast() {
   const theLabel = useGameStore.getState().undo()
   if (theLabel === null) {
-    toast('Nothing to undo in this turn')
+    toast('Nothing to undo in this turn', { id: UNDO_TOAST_ID })
+    return
+  }
+  const theGame = useGameStore.getState().game
+  if (theGame.phase === 'live' && theGame.turn !== null && theGame.turn.pausedAt !== null) {
+    toast.success('Undone: ' + theLabel + '. Clock paused.', { id: UNDO_TOAST_ID })
   } else {
-    toast.success('Undone: ' + theLabel)
+    toast.success('Undone: ' + theLabel, { id: UNDO_TOAST_ID })
   }
 }
 
@@ -183,7 +192,7 @@ export default function LiveScreen({ mode }: { mode: ScreenMode }) {
         autoAdvance={theSettings.autoAdvance}
         showNextButton={theIsControl}
         showPeek={theIsControl}
-        pointsText={pointsLine(theTurnPoints, theBonusPoints)}
+        pointsText={pointsLine(theTeam.name, theTurnPoints, theBonusPoints)}
         onNext={() => useGameStore.getState().nextTeam(Date.now())}
         onUndo={undoWithToast}
       />
@@ -209,14 +218,14 @@ export default function LiveScreen({ mode }: { mode: ScreenMode }) {
 
   return (
     <MotionConfig reducedMotion="user">
-      <section className="relative flex h-full flex-col overflow-hidden bg-bg" style={{ ['--timer-ring' as string]: 'clamp(170px, 38vh, 420px)' }} aria-label="Live turn">
+      <section className="relative flex h-full flex-col overflow-hidden bg-bg" style={{ ['--timer-ring' as string]: 'clamp(150px, min(38vh, 24vw), 420px)' }} aria-label="Live turn">
         <StandingsStrip standings={theStandings} currentTeamId={theTeam.id} round={theGame.round} roundsPerGame={theSettings.roundsPerGame} showRound={!theIsControl} />
         <div className="relative flex min-h-0 flex-1 flex-col items-center">
           {theEndGame}
           <div className="flex h-[clamp(48px,9vh,96px)] shrink-0 items-center justify-center overflow-hidden">{theStatus}</div>
           <div className="min-h-0 w-full flex-1 px-6 pb-[2vh]">{theStage}</div>
         </div>
-        <div className="grid shrink-0 grid-cols-[auto_minmax(0,1fr)_auto] items-stretch gap-8 border-t-8 bg-surface py-5 pl-8" style={{ borderColor: theTeam.color }}>
+        <div className="grid shrink-0 grid-cols-[auto_minmax(0,1fr)_auto] items-stretch gap-8 border-t-8 bg-surface py-5 pl-8 max-[899px]:gap-4 max-[899px]:pl-4" style={{ borderColor: theTeam.color }}>
           <TimerRing msLeft={theMsLeft} totalMs={theTotalMs} paused={thePaused} />
           <div className="flex items-center justify-center">{theCenter}</div>
           <LiveTeamPanel

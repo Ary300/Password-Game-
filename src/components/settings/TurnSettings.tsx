@@ -16,10 +16,10 @@ export default function TurnSettings() {
   let theHandoff = null
   if (theSettings.autoAdvance) {
     theHandoff = (
-      <SettingRow label="Hand-off countdown">
+      <SettingRow label="Wait before the next team">
         <span className="display"><Stepper
           size="lg"
-          label="Hand-off countdown"
+          label="Wait before the next team"
           value={theSettings.handoffSeconds}
           min={0}
           max={MAX_HANDOFF_SECONDS}
@@ -53,10 +53,10 @@ export default function TurnSettings() {
         checked={theSettings.multiWord}
         onChange={(theValue) => updateSettings({ multiWord: theValue })}
       />
-      <Toggle label="Auto hand-off to next team" checked={theSettings.autoAdvance} onChange={(theValue) => updateSettings({ autoAdvance: theValue })} />
+      <Toggle label="Start the next team automatically" description="Their turn begins after a short wait. Off means you press Next team." checked={theSettings.autoAdvance} onChange={(theValue) => updateSettings({ autoAdvance: theValue })} />
       {theHandoff}
-      <Toggle label="Countdown before turn" checked={theSettings.countdown} onChange={(theValue) => updateSettings({ countdown: theValue })} />
-      <Toggle label="Reveal word on time up" checked={theSettings.revealOnTimeUp} onChange={(theValue) => updateSettings({ revealOnTimeUp: theValue })} />
+      <Toggle label="3-2-1 before the clock starts" checked={theSettings.countdown} onChange={(theValue) => updateSettings({ countdown: theValue })} />
+      <Toggle label="Show the word when time runs out" checked={theSettings.revealOnTimeUp} onChange={(theValue) => updateSettings({ revealOnTimeUp: theValue })} />
     </SettingsSection>
   )
 }

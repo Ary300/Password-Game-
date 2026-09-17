@@ -16,7 +16,7 @@ export default function ClueVerdictPanel({ verdict, waitingText }: ClueVerdictPa
   }
 
   const theMatchup = (
-    <p className="mt-2 text-lg font-semibold opacity-80">
+    <p className="mt-2 text-lg font-semibold">
       {verdict.clue} for {verdict.word}
     </p>
   )
@@ -52,6 +52,7 @@ export default function ClueVerdictPanel({ verdict, waitingText }: ClueVerdictPa
         {theMatchup}
       </div>
       <ol className="mt-2">{theReasons}</ol>
+      <p className="mt-2 text-base text-muted">To settle it, close this and press U to take back a Correct, or S to skip the word.</p>
     </div>
   )
 }

@@ -55,7 +55,7 @@ export default function WinnerLine({ standings, final, delay, large }: WinnerLin
 
   let theDetailLine = null
   if (theDetail !== '') {
-    theDetailLine = <p className="display truncate pb-1 text-2xl text-muted xl:text-3xl">{theDetail}</p>
+    theDetailLine = <p className="display truncate pb-[0.2em] text-2xl text-muted xl:text-3xl">{theDetail}</p>
   }
 
   return (
@@ -66,7 +66,7 @@ export default function WinnerLine({ standings, final, delay, large }: WinnerLin
       animate={{ opacity: 1, x: 0 }}
       transition={{ delay: delay, type: 'spring', stiffness: 200, damping: 22 }}
     >
-      <h1 className={'display truncate pt-2 ' + theHeadlineSize} style={{ color: theColor }}>
+      <h1 className={'display truncate pt-1 pb-[0.16em] ' + theHeadlineSize} style={{ color: theColor }}>
         {theHeadline}
       </h1>
       {theDetailLine}

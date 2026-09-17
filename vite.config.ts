@@ -7,6 +7,12 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   base: './',
   plugins: [react(), tailwindcss()],
+  // Playwright writes trace .html files under the project; watching them reloads every open test page mid-run.
+  server: {
+    watch: {
+      ignored: ['**/test-results*/**', '**/playwright-report/**'],
+    },
+  },
   test: {
     include: ['src/**/*.test.ts', 'scripts/**/*.test.ts'],
   },

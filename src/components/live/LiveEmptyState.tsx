@@ -1,4 +1,5 @@
-import { useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useLocation, useNavigate, useNavigationType } from 'react-router-dom'
 import type { GamePhase } from '../../engine/types'
 import { useGameStore } from '../../store/useGameStore'
 import Button from '../ui/Button'
@@ -23,9 +24,34 @@ function copyFor(thePhase: GamePhase): EmptyCopy {
   return { title: 'No game running', body: 'Start a quick game with the teams from Setup, or change them first.', primary: 'Start quick game', secondary: 'Set up teams' }
 }
 
+function routeOfGame(thePhase: GamePhase): string {
+  if (thePhase === 'live') {
+    return '/live'
+  }
+  if (thePhase === 'teamup') {
+    return '/teamup'
+  }
+  if (thePhase === 'podium') {
+    return '/podium'
+  }
+  return ''
+}
+
 export default function LiveEmptyState({ phase, projector }: { phase: GamePhase; projector: boolean }) {
   const theNavigate = useNavigate()
+  const theLocation = useLocation()
+  const theNavigationType = useNavigationType()
   const theCopy = copyFor(phase)
+
+  // Going back from the leaderboard lands on whatever screen was open before, even if the game moved on
+  // while the teacher was away. A back step follows the game; a deliberate click on a screen link stays put.
+  useEffect(() => {
+    const theTarget = routeOfGame(phase)
+    if (projector || theNavigationType !== 'POP' || theTarget.length === 0 || theTarget === theLocation.pathname) {
+      return
+    }
+    theNavigate(theTarget, { replace: true })
+  }, [phase, projector, theNavigationType, theLocation.pathname, theNavigate])
 
   function runPrimary() {
     const theState = useGameStore.getState()

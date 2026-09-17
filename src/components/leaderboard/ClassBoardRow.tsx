@@ -61,7 +61,7 @@ export default function ClassBoardRow({ standing, share, striped, playingNow, to
       <span className={'display tabular text-center text-6xl xl:text-7xl ' + theRankTone}>{standing.rank}</span>
       <div className="min-w-0">
         <div className="flex items-center gap-4">
-          <span className="display truncate pb-1 text-[clamp(2rem,4.5vh,3rem)]">{standing.name}</span>
+          <span className="display truncate pb-[0.2em] text-[clamp(2rem,4.5vh,3rem)]">{standing.name}</span>
           {theLiveLabel}
         </div>
         <div className="mt-1 h-2.5 bg-bg" aria-hidden="true">

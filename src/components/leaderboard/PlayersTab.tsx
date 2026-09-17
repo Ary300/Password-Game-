@@ -40,6 +40,7 @@ export default function PlayersTab() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
+      <p className="mb-2 text-sm text-muted">This game only. Each student's lifetime totals are on Setup, under Classes.</p>
       <div className={'label border-l-8 border-transparent pr-5 pb-2 pl-3 ' + PLAYER_GRID}>
         <span className="text-center">Place</span>
         <span>Player</span>

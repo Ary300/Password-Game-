@@ -57,7 +57,7 @@ export default function HandoffPanel({ endsAt, held, handoffSeconds, projector, 
     } else if (held) {
       theHoldButton = (
         <Button size="lg" hotkey="H" onClick={blurThen(() => onHold(false))}>
-          Auto start
+          Restart countdown
         </Button>
       )
     }

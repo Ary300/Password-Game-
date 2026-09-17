@@ -7,6 +7,7 @@ export default function ClueChecker() {
   const theOpen = useGameStore((theState) => theState.clueCheckerOpen)
   const setClueCheckerOpen = useGameStore((theState) => theState.setClueCheckerOpen)
   const thePausedByUs = useRef(false)
+  const theLiveTurn = useGameStore((theState) => theState.game.phase === 'live' && theState.game.turn !== null && theState.game.turn.end === null)
 
   // A dispute should not cost the team clock time, but a turn the teacher already paused stays paused.
   useEffect(() => {
@@ -28,8 +29,13 @@ export default function ClueChecker() {
     }
   }, [theOpen])
 
+  let theDescription: string | undefined = undefined
+  if (theLiveTurn) {
+    theDescription = 'The clock stays paused while you check.'
+  }
+
   return (
-    <Modal open={theOpen} onOpenChange={setClueCheckerOpen} title="Clue checker" width="max-w-3xl">
+    <Modal open={theOpen} onOpenChange={setClueCheckerOpen} title="Clue checker" description={theDescription} width="max-w-3xl">
       <ClueCheckerForm />
     </Modal>
   )

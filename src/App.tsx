@@ -64,9 +64,9 @@ function ControlApp() {
       u: () => {
         const theLabel = undo()
         if (theLabel === null) {
-          toast('Nothing to undo in this turn')
+          toast('Nothing to undo in this turn', { id: 'undo' })
         } else {
-          toast.success('Undone: ' + theLabel)
+          toast.success('Undone: ' + theLabel, { id: 'undo' })
         }
       },
       f: () => {
@@ -116,7 +116,7 @@ export default function App() {
   return (
     <>
       {theBody}
-      <Toaster position="bottom-center" theme="dark" toastOptions={{ style: { background: 'var(--surface-2)', color: 'var(--text)', border: '1px solid var(--line)', fontSize: '16px' } }} />
+      <Toaster position="top-right" offset={72} theme="dark" toastOptions={{ style: { background: 'var(--surface-2)', color: 'var(--text)', border: '1px solid var(--line)', fontSize: '16px' } }} />
     </>
   )
 }

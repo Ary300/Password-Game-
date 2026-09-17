@@ -23,6 +23,7 @@ export default function PodiumBlock({ standing, delay, large }: PodiumBlockProps
   const theFirst = standing.rank === 1
   const theHeight = 'calc((100% - var(--podium-label)) * ' + String(heightShare(standing.rank)) + ')'
 
+  // Display type sets a tight line height, so the name needs em-based bottom room or truncate clips descenders like the g in Tigers.
   // The numeral scales with its own block, so a short third-place block on a small screen never clips its rank.
   let theBlockTone = 'bg-surface-3 text-text border-t-8'
   let theBlockStyle = { height: theHeight, borderTopColor: standing.color }
@@ -51,7 +52,7 @@ export default function PodiumBlock({ standing, delay, large }: PodiumBlockProps
   return (
     <motion.div className="flex h-full min-w-0 flex-col justify-end" initial={theInitial} animate={{ y: '0%' }} transition={{ delay: delay, type: 'spring', stiffness: 130, damping: 21 }}>
       <div className="flex h-[var(--podium-label)] shrink-0 flex-col items-center justify-end px-2 pb-2 text-center xl:pb-3">
-        <span className={'display block max-w-full truncate pb-1 ' + theNameSize}>{standing.name}</span>
+        <span className={'display block max-w-full truncate pb-[0.2em] ' + theNameSize}>{standing.name}</span>
         <span className={'display tabular text-gold ' + thePointsSize}>
           {standing.points}
           <span className="text-[0.6em] text-muted">{thePointsLabel}</span>

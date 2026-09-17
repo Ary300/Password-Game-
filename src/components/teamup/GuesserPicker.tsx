@@ -12,14 +12,17 @@ type GuesserPickerProps = {
   onPick: (thePlayerId: string) => void
 }
 
-// Radix returns focus to the trigger after a pick; releasing it lets Space start the turn right away.
+const RELEASE_DELAY_MS = 50
+
+// Radix returns focus to the trigger on its own timer after a pick, so a zero delay blurs too early and the
+// next Space reopens the picker. Waiting past that timer lets Space start the turn right away.
 function releaseFocus() {
   window.setTimeout(() => {
     const theActive = document.activeElement
-    if (theActive instanceof HTMLElement) {
+    if (theActive instanceof HTMLElement && theActive.getAttribute('role') === 'combobox') {
       theActive.blur()
     }
-  }, 0)
+  }, RELEASE_DELAY_MS)
 }
 
 export default function GuesserPicker({ team, turnsLog, absentIds, value, openCount, onPick }: GuesserPickerProps) {
@@ -45,6 +48,7 @@ export default function GuesserPicker({ team, turnsLog, absentIds, value, openCo
           onChange={onPick}
           size="lg"
           defaultOpen={openCount > 0}
+          returnFocus={false}
           onOpenChange={(theOpen) => {
             if (!theOpen) {
               releaseFocus()

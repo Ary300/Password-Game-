@@ -92,7 +92,7 @@ export default function HistoryRow({ row, team, onEdit }: HistoryRowProps) {
         <span className="block truncate text-base">{theGuesser}</span>
         {theSwapped}
       </span>
-      <span className={'display truncate pt-0.5 text-3xl ' + theWordTone}>{row.word}</span>
+      <span className={'display truncate pt-0.5 pb-[0.2em] text-3xl ' + theWordTone}>{row.word}</span>
       <span className="min-w-0 leading-tight">
         <OutcomeChip outcome={row.outcome} />
         {theNote}

@@ -6,9 +6,10 @@ import { useGameStore } from '../../store/useGameStore'
 
 type CardText = {
   id: string
+  word: string
   name: string
   seconds: string
-  correct: number
+  correct: number | null
 }
 
 // Watching the history row instead of the key press means the projector window shows the same card as the teacher.
@@ -29,10 +30,15 @@ export default function CareerCard() {
     }
     theSeenRef.current = theLastId
     const theRow = theHistory[theHistory.length - 1]
-    if (theRow === undefined || theRow.outcome !== 'correct' || theGame.mode !== 'class' || theClass === null) {
+    if (theRow === undefined || theRow.outcome !== 'correct') {
       return
     }
     if (Date.now() - theRow.at > CORRECT_CARD_MS) {
+      return
+    }
+    // The next word replaces the guessed one at once, so every game briefly names the word that just scored.
+    if (theGame.mode !== 'class' || theClass === null) {
+      setTheCard({ id: theRow.id, word: theRow.word, name: '', seconds: '', correct: null })
       return
     }
     let theStudent = null
@@ -42,10 +48,11 @@ export default function CareerCard() {
       }
     }
     if (theStudent === null) {
+      setTheCard({ id: theRow.id, word: theRow.word, name: '', seconds: '', correct: null })
       return
     }
     const theCareer = liveCareer(theStudent, theGame)
-    setTheCard({ id: theRow.id, name: theStudent.name, seconds: (theRow.elapsedMs / 1000).toFixed(1), correct: theCareer.correct })
+    setTheCard({ id: theRow.id, word: theRow.word, name: theStudent.name, seconds: (theRow.elapsedMs / 1000).toFixed(1), correct: theCareer.correct })
   }, [theLastId, theHistory, theGame, theClass])
 
   useEffect(() => {
@@ -59,9 +66,22 @@ export default function CareerCard() {
   if (theCard === null) {
     return null
   }
+  const theWordClass = 'bg-good px-5 py-2 text-gold-ink'
+  if (theCard.correct === null) {
+    return (
+      <div key={theCard.id} className="flex text-[clamp(22px,3vh,34px)] font-extrabold">
+        <div className={theWordClass} role="status">
+          Correct: {theCard.word}
+        </div>
+      </div>
+    )
+  }
   return (
-    <div key={theCard.id} className="border-l-8 border-good bg-surface-2 px-6 py-2 text-[clamp(22px,3vh,34px)] font-extrabold" role="status">
-      {theCard.name}, <span className="tabular text-good">{theCard.seconds} s</span>. Career: <span className="tabular text-gold">{theCard.correct}</span> correct.
+    <div key={theCard.id} className="flex text-[clamp(22px,3vh,34px)] font-extrabold">
+      <div className={theWordClass}>Correct: {theCard.word}</div>
+      <div className="bg-surface-2 px-6 py-2" role="status">
+        {theCard.name}, <span className="tabular text-good">{theCard.seconds} s</span>. Career: <span className="tabular text-gold">{theCard.correct}</span> correct.
+      </div>
     </div>
   )
 }

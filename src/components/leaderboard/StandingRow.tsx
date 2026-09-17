@@ -42,7 +42,7 @@ export default function StandingRow({ standing, maxPoints, tied, striped }: Stan
         {theTiedLabel}
       </div>
       <div className="min-w-0">
-        <span className="display block truncate pb-1 text-4xl xl:text-5xl">{standing.name}</span>
+        <span className="display block truncate pb-[0.2em] text-4xl xl:text-5xl">{standing.name}</span>
         <div className="mt-2 h-2.5 bg-bg" aria-hidden="true">
           <motion.div
             className="h-full"

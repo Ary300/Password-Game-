@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { motion, useReducedMotion } from 'motion/react'
 import { useLayoutEffect, useRef, useState } from 'react'
 
 const MIN_WORD_PX = 120
@@ -12,6 +12,11 @@ export default function WordDisplay({ word }: { word: string }) {
   const theBoxRef = useRef<HTMLDivElement>(null)
   const theMeasureRef = useRef<HTMLSpanElement>(null)
   const [theSize, setTheSize] = useState(MIN_WORD_PX)
+  const theReduced = useReducedMotion()
+  let theFadeSeconds = 0.12
+  if (theReduced) {
+    theFadeSeconds = 0
+  }
 
   useLayoutEffect(() => {
     const theBox = theBoxRef.current
@@ -56,7 +61,7 @@ export default function WordDisplay({ word }: { word: string }) {
         key={word}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.12 }}
+        transition={{ duration: theFadeSeconds }}
         className={'block pb-[0.1em] text-text ' + theTypeClass}
         style={{ fontSize: theSize }}
         aria-live="polite"

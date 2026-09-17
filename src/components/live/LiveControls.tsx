@@ -34,7 +34,7 @@ export default function LiveControls({ paused, counting, skipsLeft, onCorrect, o
         Correct
       </Button>
       <Button size="lg" hotkey="S" disabled={counting || skipsLeft <= 0} onClick={blurThen(onSkip)}>
-        Skip {skipsLeft}
+        Skip <span className="text-lg opacity-75">{skipsLeft} left</span>
       </Button>
       <Button size="lg" variant={thePauseVariant} hotkey="Space" onClick={blurThen(onPause)}>
         {thePauseLabel}

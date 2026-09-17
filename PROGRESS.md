@@ -56,6 +56,14 @@ Three agents clicked through every control at 1920x1080, 1280x720, and the user'
 - Added: paste a roster, clear a team's players, quick +1/-1 score fixes on Live and Team up, End game from Live and Team up, fullscreen button, Show word when reveal is off, edit or remove any history row with scores and careers recomputed, Players tab with per-student stats, class board reset and top guessers.
 - Fixed: timer digits overlapping the ring, word clipped under the Paused label, key caps over button labels, top bar links hidden below 1024px, podium and setup layouts at laptop size, turn counts inflated by guesser swaps, reset settings leaving extra teams, hold key starting a countdown.
 
+## End-to-end test suite (third pass)
+
+`npm run test:e2e` runs 141 Playwright tests at 1920x1080 (projector) and 1000x563 (the teacher's laptop): setup, classes, settings, turn flow, auto hand-off, timer accuracy, scoring, leaderboard, podium, clue checker, shortcuts, projector sync, visual overlap checks on every screen, and axe accessibility. Full run: 281 passed, 5 axe runs skipped at laptop size by design, after fixing the one failure below.
+
+Bugs the suites found and fixed: restarting mid class game lost careers, removing a student after a split hid the class teams, the guesser picker kept focus so hotkeys stopped, Space reopened the picker instead of starting the turn, a back step from the leaderboard stranded the teacher on an empty Live screen, stacked undo toasts covered buttons, the dev server reloaded test pages on every trace file, Play again used the Setup class instead of the class that just played, the team banner slid in despite reduced motion, name descenders clipped on the podium and leaderboard, light theme contrast failures, and the Live controls crushed at 800 px.
+
+Usability pass: a How to play strip in round 1, a Correct card so the class sees which word counted, plain labels for hand-off settings, End game focuses Keep playing and holds the next-team countdown, the clue checker says the clock is paused and what to do next.
+
 ## Next
 
 - Enable GitHub Pages and run the deploy workflow when the class wants a public link.

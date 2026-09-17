@@ -449,8 +449,28 @@ export const useGameStore = create<GameStore>()(
         })
       },
       removeStudent: (theClassId, theStudentId) => {
+        const theState = get()
+        // A removed student left on a team would stop the teams counting as class teams, wiping the split from view.
+        let theTeams = theState.teams
+        if (theState.game.phase !== 'teamup' && theState.game.phase !== 'live') {
+          theTeams = []
+          for (let n = 0; n < theState.teams.length; n++) {
+            const theKept: Player[] = []
+            for (let i = 0; i < theState.teams[n].players.length; i++) {
+              if (theState.teams[n].players[i].id !== theStudentId) {
+                theKept.push(theState.teams[n].players[i])
+              }
+            }
+            let thePicked = theState.teams[n].pickedGuesserId
+            if (thePicked === theStudentId) {
+              thePicked = null
+            }
+            theTeams.push({ ...theState.teams[n], players: theKept, pickedGuesserId: thePicked })
+          }
+        }
         set({
-          classes: replaceClass(get().classes, theClassId, (theClass) => {
+          teams: theTeams,
+          classes: replaceClass(theState.classes, theClassId, (theClass) => {
             const theStudents: Student[] = []
             for (let n = 0; n < theClass.students.length; n++) {
               if (theClass.students[n].id !== theStudentId) {
@@ -518,8 +538,14 @@ export const useGameStore = create<GameStore>()(
           }
           theColored.push({ ...theTeams[n], name: theName, color: teamColorAt(n), pickedGuesserId: null })
         }
+        // Starting over mid-game ends that game, so a class game's turns still count once toward careers and the class board.
+        let theClasses = theState.classes
+        const theOldGame = theState.game
+        if (!theOldGame.committed && theOldGame.classId !== null && theOldGame.turnsLog.length > 0) {
+          theClasses = replaceClass(theClasses, theOldGame.classId, (theClass) => commitGameToClass(theClass, theOldGame))
+        }
         const theGame = { ...freshGame(theMode, theClassId), phase: 'teamup' as const }
-        set({ teams: theColored, lastTeams: theColored, game: theGame, undoStack: [], settingsOpen: false })
+        set({ classes: theClasses, teams: theColored, lastTeams: theColored, game: theGame, undoStack: [], settingsOpen: false })
       },
       quickGame: () => {
         const theState = get()
@@ -612,7 +638,7 @@ export const useGameStore = create<GameStore>()(
         const theLeft = secondsLeftAt(theTurn, theNow, theSettings)
         const thePoints = pointsForCorrect(theSettings.pointsPerCorrect, theSettings.timeBonus, theLeft)
         const theRow = makeResult(theGame, theTurn, 'correct', thePoints, theNow, theSettings)
-        const theUndo = pushUndo(theState.undoStack, 'Correct: ' + theTurn.word.word, theGame, theState.teams)
+        const theUndo = pushUndo(theState.undoStack, 'Correct for ' + theTurn.word.word, theGame, theState.teams)
         const theHistory = theGame.history.concat([theRow])
         if (theSettings.multiWord && theLeft > 0) {
           const theDraw = drawWord(theSettings, theGame)
@@ -666,7 +692,7 @@ export const useGameStore = create<GameStore>()(
             poolWarning: theDraw.warning,
             turn: { ...theTurn, word: theDraw.word, wordShownAt: theShownAt, skipsUsed: theTurn.skipsUsed + 1, swapOpen: false },
           },
-          undoStack: pushUndo(theState.undoStack, 'Skip: ' + theTurn.word.word, theGame, theState.teams),
+          undoStack: pushUndo(theState.undoStack, 'Skip of ' + theTurn.word.word, theGame, theState.teams),
         })
       },
       togglePause: (theNow) => {
@@ -962,8 +988,13 @@ export const useGameStore = create<GameStore>()(
         if (theMode === 'class' && findClass(theState.classes, theState.game.classId) === null) {
           theMode = 'quick'
         }
+        // Play again means the same class that just played, even if Setup has another class selected.
+        const theGameClassId = theState.game.classId
         if (!theState.game.committed && theState.game.phase !== 'setup') {
           get().endGame()
+        }
+        if (theMode === 'class' && theGameClassId !== null) {
+          set({ activeClassId: theGameClassId })
         }
         get().startGame(theMode)
       },

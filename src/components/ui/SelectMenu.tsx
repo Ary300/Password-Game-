@@ -16,9 +16,10 @@ type SelectMenuProps = {
   size?: 'md' | 'lg'
   defaultOpen?: boolean
   onOpenChange?: (theOpen: boolean) => void
+  returnFocus?: boolean
 }
 
-export default function SelectMenu({ label, value, options, onChange, placeholder = 'Choose', size = 'md', defaultOpen, onOpenChange }: SelectMenuProps) {
+export default function SelectMenu({ label, value, options, onChange, placeholder = 'Choose', size = 'md', defaultOpen, onOpenChange, returnFocus = true }: SelectMenuProps) {
   const theItems = []
   for (let n = 0; n < options.length; n++) {
     const theOption = options[n]
@@ -44,6 +45,12 @@ export default function SelectMenu({ label, value, options, onChange, placeholde
   if (size === 'lg') {
     theTrigger = 'h-14 text-xl'
   }
+  // A picker opened by a hotkey hands focus back to the page, or the next hotkey lands on the trigger instead.
+  function onCloseAutoFocus(theEvent: Event) {
+    if (!returnFocus) {
+      theEvent.preventDefault()
+    }
+  }
   return (
     <Select.Root value={value} onValueChange={onChange} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
       <Select.Trigger
@@ -56,7 +63,7 @@ export default function SelectMenu({ label, value, options, onChange, placeholde
         </Select.Icon>
       </Select.Trigger>
       <Select.Portal>
-        <Select.Content position="popper" sideOffset={6} className="z-[60] max-h-[60vh] min-w-[var(--radix-select-trigger-width)] overflow-hidden border-t-4 border-crimson bg-surface-2 p-1">
+        <Select.Content onCloseAutoFocus={onCloseAutoFocus} position="popper" sideOffset={6} className="z-[60] max-h-[60vh] min-w-[var(--radix-select-trigger-width)] overflow-hidden border-t-4 border-crimson bg-surface-2 p-1">
           <Select.Viewport>{theItems}</Select.Viewport>
         </Select.Content>
       </Select.Portal>

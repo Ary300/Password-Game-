@@ -7,6 +7,7 @@ import EndGameModal from '../leaderboard/EndGameModal'
 export default function EndGameButton({ className = '' }: { className?: string }) {
   const [theOpen, setTheOpen] = useState(false)
   const thePausedByUs = useRef(false)
+  const theHeldByUs = useRef(false)
   const theClassGame = useGameStore((theState) => theState.game.mode === 'class')
 
   function openConfirm(theEvent: MouseEvent<HTMLButtonElement>) {
@@ -18,6 +19,12 @@ export default function EndGameButton({ className = '' }: { className?: string }
       theState.togglePause(Date.now())
       thePausedByUs.current = true
     }
+    // A hand-off countdown behind the dialog would start the next turn while the teacher is still deciding.
+    theHeldByUs.current = false
+    if (theState.game.phase === 'teamup' && theState.game.handoffEndsAt !== null) {
+      theState.holdHandoff(true, Date.now())
+      theHeldByUs.current = true
+    }
     setTheOpen(true)
   }
 
@@ -26,6 +33,13 @@ export default function EndGameButton({ className = '' }: { className?: string }
       return
     }
     setTheOpen(false)
+    if (theHeldByUs.current) {
+      theHeldByUs.current = false
+      const theState = useGameStore.getState()
+      if (theState.game.phase === 'teamup' && theState.game.handoffHeld) {
+        theState.holdHandoff(false, Date.now())
+      }
+    }
     if (thePausedByUs.current) {
       thePausedByUs.current = false
       const theState = useGameStore.getState()
@@ -38,6 +52,7 @@ export default function EndGameButton({ className = '' }: { className?: string }
 
   function confirmEnd() {
     thePausedByUs.current = false
+    theHeldByUs.current = false
     setTheOpen(false)
     useGameStore.getState().endGame()
   }

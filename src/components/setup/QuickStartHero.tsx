@@ -26,7 +26,7 @@ export default function QuickStartHero() {
     <section className="@container varsity-cut mesh flex min-h-[calc(100dvh-3.5rem)] flex-col lg:h-full lg:min-h-0 bg-crimson text-white" aria-labelledby="setup-title">
       <div className="flex flex-1 flex-col pt-6 lg:min-h-0 pr-14 pl-7 xl:pt-8 xl:pr-20 xl:pl-10">
         <p className="font-display text-2xl font-extrabold text-gold xl:text-3xl">Park Tudor Panthers</p>
-        <h1 id="setup-title" className="display -ml-1 text-[clamp(88px,min(23cqw,26vh),300px)] leading-[0.8]">
+        <h1 id="setup-title" className="display -ml-1 text-[clamp(88px,min(22cqw,26vh),300px)] leading-[0.8]">
           Password
         </h1>
         <p className="mt-3 text-lg font-semibold text-white/90 xl:text-2xl">Mr. Ritz's classroom word game</p>
@@ -41,10 +41,19 @@ export default function QuickStartHero() {
             <span className="display text-6xl 2xl:text-8xl">Start game</span>
             <kbd className="keycap px-2.5 py-1.5 text-lg 2xl:text-2xl">Enter</kbd>
           </button>
-          <p className="mt-3 text-base text-white/90 xl:text-lg">
+          <div className="mt-3 flex flex-wrap items-baseline gap-x-5 gap-y-1">
+          <p className="text-base text-white/90 xl:text-lg">
             <span className="font-bold text-white">Plays with </span>
             {theCaption}
           </p>
+          <button
+            type="button"
+            onClick={() => document.getElementById('team-setup')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            className="text-base font-bold text-gold underline underline-offset-4 hover:text-white lg:hidden"
+          >
+            Rename teams or load a class roster
+          </button>
+          </div>
           {theNotice}
         </div>
       </div>
